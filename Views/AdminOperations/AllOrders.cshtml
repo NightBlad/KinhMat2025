@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Order>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Tất Cả Đơn Hàng";
+}
+<div class="container mt-4">
+    <h4>Danh Sách Đơn Hàng</h4>
+    @if (Model != null && Model.Count() > 0)
+    {
+        <table class="table table-light" id="example">
+            <thead>
+                <tr>
+                    <th>Ngày Đặt</th>
+                    <th>Tên</th>
+                    <th>Email</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Địa Chỉ</th>
+                    <th>Trạng Thái Thanh Toán</th>
+                    <th>Trạng Thái Đơn Hàng</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.CreateDate.ToString("dd-MM-yyyy")</td>
+                        <td>@order.Name</td>
+                        <td>@order.Email</td>
+                        <td>@order.MobileNumber</td>
+                        <td>@order.Address</td>
+                        <td>@order.PaymentMethod | @(order.IsPaid ? "Đã Thanh Toán" : "Chưa Thanh Toán")</td>
+                        <td>@order.OrderStatus.StatusName</td>
+                        <td>
+                            <button type="button" data-bs-toggle="modal" data-bs-target="#modal-@order.Id" class="btn btn-dark rounded-pill d-block my-2">
+                                Chi Tiết Đơn Hàng
+                            </button>
+                            <a asp-action="TogglePaymentStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill my-2">Chuyển Đổi Trạng Thái Thanh Toán</a>
+                            <a asp-action="UpdateOrderStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill d-block my-2">Cập Nhật Trạng Thái Đơn Hàng</a>
+
+                            @* Thêm modal vào trong ô này *@
+                            @await Html.PartialAsync("/Views/AdminOperations/_OrderDetailModal.cshtml", new OrderDetailModalDTO { DivId = order.Id.ToString(), OrderDetail = order.OrderDetail })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h5>Không có đơn hàng nào</h5>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({ responsive: true });
+        });
+    </script>
+    <script src="~/js/item-delete.js"></script>
+}

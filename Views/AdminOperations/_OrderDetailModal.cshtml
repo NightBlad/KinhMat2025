@@ -1,0 +1,39 @@
+﻿@model OrderDetailModalDTO
+
+@{
+
+}
+<div class="modal" tabindex="-1" id="modal-@Model.DivId">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi Tiết Đơn Hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Sản Phẩm</th>
+                        <th>Loại Kính</th>
+                        <th>Giá</th>
+                        <th>Số Lượng</th>
+                        <th>Tổng</th>
+                    </tr>
+                    @foreach (var s in Model.OrderDetail)
+                    {
+                        <tr>
+                            <td>@s.Item.Name</td>
+                            <td>@s.Item.Category.Name</td>
+                            <td>@s.UnitPrice</td>
+                            <td>@s.Quantity</td>
+                            <td>@(s.Quantity * s.UnitPrice)</td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>

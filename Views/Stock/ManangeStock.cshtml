@@ -1,0 +1,20 @@
+﻿@model StockDTO
+
+
+<div class="container mt-5 mb-5" style="width:50%">
+    <h2> Quản lý kho hàng </h2>
+    <a asp-action="Index" asp-controller="Stock" class="btn btn-dark">Quay lại</a>
+    <form asp-action="ManageStock">
+        <input type="hidden" asp-for="ItemId" />
+
+        <div class="my-2">
+            <label>Số lượng</label>
+            <input type="number" class="form-control" asp-for="Quantity" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="my-2">
+            <button type="submit" class="btn btn-dark">Cập nhật</button>
+        </div>
+    </form>
+</div>

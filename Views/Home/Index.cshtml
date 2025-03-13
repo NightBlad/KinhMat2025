@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Item>
+
+@{
+    ViewData["Title"] = "Trang Chủ";
+}
+<!-- Phần mở đầu -->
+<div class="bg-dark text-secondary text-center hero">
+    <div class="container py-5">
+        <h1 class="display-5 fw-bold text-white">Thế giới kính thời trang Kool!</h1>
+        <div class="mx-auto">
+            <p class="fs-5 mb-4" style="color:white">Đeo kính không chỉ là nhìn rõ hơn, mà còn là thể hiện phong cách!</p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <div class="pb-3">
+                    <a class="btn btn-dark btn-lg text-uppercase" style="border-radius:25px" href="#services">Khám phá ngay</a>
+                </div>
+                <div>
+                    <a class="btn btn-dark btn-lg text-uppercase" style="border-radius:25px" asp-controller="Home" asp-action="Products">Mua kính ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dịch vụ -->
+<section class="page-section bg-light" id="services">
+    <div class="container">
+        <div class="text-center">
+            <h2 class="section-heading text-uppercase">Vì sao chọn Kool?</h2>
+            <h3 class="section-subheading text-muted">Đẳng cấp – Chất lượng – Phong cách</h3>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-glasses fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="my-3">Hàng trăm mẫu kính HOT</h4>
+                <p class="text-muted">Cập nhật xu hướng kính thời trang mới nhất, hợp gu mọi phong cách.</p>
+            </div>
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-truck fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="my-3">Giao hàng siêu tốc</h4>
+                <p class="text-muted">Đặt hôm nay – Có ngay ngày mai. Freeship toàn quốc!</p>
+            </div>
+            <div class="col-md-4">
+                <span class="fa-stack fa-4x">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-check-circle fa-stack-1x fa-inverse"></i>
+                </span>
+                <h4 class="my-3">Bảo hành uy tín</h4>
+                <p class="text-muted">Cam kết chất lượng, bảo hành chính hãng lên đến 12 tháng.</p>
+            </div>
+        </div>
+    </div>
+</section>

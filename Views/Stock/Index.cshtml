@@ -1,0 +1,39 @@
+﻿@model IEnumerable<StockDisplayModel>
+@{
+
+}
+<div class="container py-5">
+
+    <h2 class="text-center">Kho hàng</h2>
+    <table class="table" id="example">
+        <thead>
+            <tr>
+                <th class="text-center">Sản phẩm</th>
+                <th class="text-center">Số lượng tồn kho</th>
+                <th class="text-center"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-center">@item.ItemName</td>
+                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-center">
+                        <a asp-action="ManageStock" asp-controller="Stock" asp-route-itemId="@item.ItemId" class="btn btn-dark rounded-pill py-2 btn-block">Cập nhật kho</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable();
+        });
+    </script>
+    <script src="~/js/item-delete.js"></script>
+}

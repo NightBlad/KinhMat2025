@@ -1,0 +1,68 @@
+﻿@using Shopping_Cart_2.Sittings
+@model EditItemVM
+
+@{
+    // Layout = "_AdminLayout";
+    ViewData["Titles"] = "Chỉnh sửa sản phẩm";
+}
+<div class="container">
+    <p class="ptable">
+        Chỉnh sửa sản phẩm của bạn
+    </p>
+
+    <form asp-controller="Items" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Name" class="form-label mt-4 fw-bold"></label>
+                    <input type="text" class="form-control" asp-for="Name" placeholder="Tên sản phẩm">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="form-label mt-4 fw-bold"></label>
+                    <select class="form-select" asp-for="CategoryId" asp-items="Model.Categories" data-placeholder="Chọn danh mục"
+                            data-minimum-results-for-search="Infinity">
+                        <option value="">Chọn danh mục</option>
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="form-label mt-4 fw-bold"></label>
+                    <input type="number" class="form-control" asp-for="Price" placeholder="Giá">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Quantity" class="form-label mt-4 fw-bold"></label>
+                    <input type="number" class="form-control" asp-for="Quantity" placeholder="Số lượng">
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label mt-4 fw-bold"></label>
+                    <textarea asp-for="Description" class="form-control" placeholder="Nhập mô tả..."></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Cover" class="form-label mt-4 fw-bold"></label>
+                    <input type="file" class="form-control" asp-for="Cover"
+                           data-rule-extension="@FileSettings.AllowedExtensions.Replace(".", string.Empty)"
+                           data-msg-extension="Định dạng không hợp lệ"
+                           data-rule-filesize="@FileSettings.MaxFileSizeInBytes"
+                           data-msg-filesize="Kích thước tối đa cho phép là @FileSettings.MaxFileSizeInMB MB" />
+
+                    <small class="form-text text-muted">Chỉ chấp nhận các tệp @FileSettings.AllowedExtensions với kích thước tối đa @(FileSettings.MaxFileSizeInMB)MB.</small>
+                    <span asp-validation-for="Cover" class="text-danger d-block"></span>
+                </div>
+                <button type="submit" class="btn btn-dark btn-l text-uppercase mt-4">Lưu</button>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center pt-4 overflow-hidden">
+                <img src="@($"{FileSettings.ImagesPath}/{Model.CurrentCover}")"
+                     class="cover-preview m-auto" alt="Ảnh bìa" />
+            </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/filesize-validator.js " asp-append-version="true"></script>
+    <script src="~/js/item-form.js" asp-append-version="true"></script>
+}
