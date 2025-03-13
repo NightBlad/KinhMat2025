@@ -13,13 +13,14 @@ namespace Shopping_Cart_2.Controllers
     public class AdminOperationsController : Controller
     {
         private readonly IUserOrderService _userOrderService;
-        private readonly IManageItemService _manageItemService; 
-        public AdminOperationsController(IUserOrderService userOrderService, IManageItemService manageItemService )
+        private readonly IManageItemService _manageItemService;
+        private readonly ICategoryService _categoryService;
+        public AdminOperationsController(IUserOrderService userOrderService, IManageItemService manageItemService, ICategoryService categoryService)
         {
             _userOrderService = userOrderService;
             _manageItemService = manageItemService;
-             
-            
+            _categoryService = categoryService;
+
         }
 
 
@@ -97,14 +98,73 @@ namespace Shopping_Cart_2.Controllers
             return RedirectToAction(nameof(GetAllItems));
              
         }
+
         public async Task <IActionResult> GetAllItems()
         {
             var items = await _manageItemService.GetAllItems();
             return View(items);
         }
-        
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var categories = await _categoryService.GetAllCategories();
+            return View(categories);
+        }
 
-         
+        public IActionResult CreateCategory()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategory(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.AddCategory(category);
+                return RedirectToAction(nameof(GetAllCategories));
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> EditCategory(int id)
+        {
+            var category = await _categoryService.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditCategory(Category category)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.UpdateCategory(category);
+                return RedirectToAction(nameof(GetAllCategories));
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var category = await _categoryService.GetCategoryById(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return View(category);
+        }
+
+        [HttpPost, ActionName("DeleteCategory")]
+        public async Task<IActionResult> DeleteCategoryConfirmed(int id)
+        {
+            await _categoryService.DeleteCategory(id);
+            return RedirectToAction(nameof(GetAllCategories));
+        }
+
+
 
     }
 }

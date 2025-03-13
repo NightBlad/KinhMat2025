@@ -1,0 +1,83 @@
+﻿@model Shopping_Cart_2.ViewModels.EditUserViewModel
+
+@{
+    ViewData["Title"] = "Edit User";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <h2>Edit your user details.</h2>
+    <hr />
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <div class="form-floating mb-3">
+                    <input asp-for="UserName" class="form-control" placeholder="User Name" />
+                    <label asp-for="UserName" class="form-label"></label>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="Email" class="form-control" placeholder="Email" />
+                    <label asp-for="Email" class="form-label"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-check mb-3">
+                    <input asp-for="EmailConfirmed" class="form-check-input" type="checkbox" />
+                    <label asp-for="EmailConfirmed" class="form-check-label"></label>
+                    <span asp-validation-for="EmailConfirmed" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <select asp-for="Role" class="form-control" asp-items="@(new SelectList(ViewBag.Roles, "Name", "Name"))">
+                        <option value="">Select Role</option>
+                    </select>
+                    <label asp-for="Role" class="form-label"></label>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3 position-relative">
+                    <input asp-for="CurrentPassword" class="form-control" id="CurrentPassword" type="password" placeholder="Current Password" />
+                    <label asp-for="CurrentPassword" class="form-label"></label>
+                    <span asp-validation-for="CurrentPassword" class="text-danger"></span>
+                    <i class="bi bi-eye position-absolute" id="toggleCurrentPassword" style="cursor: pointer; right: 10px; top: 50%; transform: translateY(-50%);"></i>
+                </div>
+                <div class="form-floating mb-3 position-relative">
+                    <input asp-for="NewPassword" class="form-control" id="NewPassword" type="password" placeholder="New Password" />
+                    <label asp-for="NewPassword" class="form-label"></label>
+                    <span asp-validation-for="NewPassword" class="text-danger"></span>
+                    <i class="bi bi-eye position-absolute" id="toggleNewPassword" style="cursor: pointer; right: 10px; top: 50%; transform: translateY(-50%);"></i>
+                </div>
+                <div class="form-floating mb-3">
+                    <input asp-for="ConfirmNewPassword" class="form-control" placeholder="Confirm New Password" />
+                    <label asp-for="ConfirmNewPassword" class="form-label"></label>
+                    <span asp-validation-for="ConfirmNewPassword" class="text-danger"></span>
+                </div>
+                <button type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+                <a asp-action="Index" class="w-100 btn btn-lg btn-secondary mt-2">Back to List</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('toggleCurrentPassword').addEventListener('click', function () {
+            var passwordField = document.getElementById('CurrentPassword');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        });
+
+        document.getElementById('toggleNewPassword').addEventListener('click', function () {
+            var passwordField = document.getElementById('NewPassword');
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+            } else {
+                passwordField.type = 'password';
+            }
+        });
+    </script>
+}

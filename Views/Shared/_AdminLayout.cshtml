@@ -33,12 +33,14 @@
             @* side nav bar *@
         <nav class="sidenav list-group ">
 
-            <a class="navigation-link   " asp-controller="Home" asp-action="Index">Back To Home</a>
+            <a class="navigation-link   " asp-controller="Home" asp-action="Index">Quay về trang chủ</a>
             <a class="navigation-link   " asp-controller="AdminOperations" asp-action="Dashboard">    Dashboard  </a>
-            <a class="navigation-link   " asp-controller="Roles" asp-action="Index">User Roles</a> 
-            <a class="navigation-link   " asp-area="" asp-controller="AdminOperations" asp-action="GetAllItems">Manage Products  </a>
-            <a class="navigation-link   " asp-controller="AdminOperations" asp-action="AllOrders">Orders</a>
-            <a class="navigation-link   " asp-controller="Stock" asp-action="Index">Stock</a> 
+            <a class="navigation-link   " asp-controller="Roles" asp-action="Index">Quản lý vai trò người dùng</a>
+			<a class="navigation-link   " asp-controller="User" asp-action="Index">Quản lý người dùng</a>
+            <a class="navigation-link   " asp-area="" asp-controller="AdminOperations" asp-action="GetAllItems">Quản lý sản phẩm  </a>
+            <a class="navigation-link   " asp-controller="AdminOperations" asp-action="AllOrders">Quản lý Đơn hàng</a>
+			<a class="navigation-link   " asp-controller="AdminOperations" asp-action="GetAllCategories">Quản lý nhãn/thể loại</a>
+            <a class="navigation-link   " asp-controller="Stock" asp-action="Index">Sản phẩm</a> 
 
             
                 </nav>

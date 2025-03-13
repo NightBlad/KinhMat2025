@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Shopping_Cart_2.Models.Category>
+
+@{
+    ViewData["Title"] = "Categories";
+    Layout = "_AdminLayout";
+}
+
+<div class="container mt-4">
+    <h4>Categories</h4>
+    <p>
+        <a asp-action="CreateCategory" class="btn btn-primary">Create New</a>
+    </p>
+    @if (Model != null && Model.Any())
+    {
+        <table class="table table-light" id="categoriesTable">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Name)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            <a asp-action="EditCategory" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
+                            <a asp-action="DeleteCategory" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <h5>No categories available</h5>
+    }
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#categoriesTable').DataTable({ responsive: true });
+        });
+    </script>
+}
