@@ -12,7 +12,7 @@
         public string? Email { get; set; }
 
         [Required]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "The mobile number must be 10 digits.")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "Số điện thoại phải có đúng 10 chữ số.")]
         public string? MobileNumber { get; set; }
 
         [Required]

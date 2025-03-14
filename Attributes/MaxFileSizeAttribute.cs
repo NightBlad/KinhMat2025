@@ -20,7 +20,7 @@ namespace Shopping_Cart_2.Attributes
             {
                 if (file.Length > _maxFileSize)
                 {
-                    return new ValidationResult($"Maximum allowed size is {_maxFileSize} bytes");
+                    return new ValidationResult($"Dung lượng tệp tối đa cho phép là {_maxFileSize} byte");
                 }
             }
 
