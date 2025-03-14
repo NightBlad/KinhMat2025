@@ -32,16 +32,22 @@ namespace Shopping_Cart_2.Services
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
-        private async Task<string> SaveCover(IFormFile cover)
+        public async Task<string> SaveCover(IFormFile cover)
         {
-            var coverName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "items", fileName);
 
-            var path = Path.Combine(_imagesPath, coverName);
+            // Ensure the directory exists
+            var directory = Path.GetDirectoryName(path);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
-            using var stream = File.Create(path);
+            using var stream = new FileStream(path, FileMode.Create);
             await cover.CopyToAsync(stream);
 
-            return coverName;
+            return fileName;
         }
         public  IEnumerable<Item> GetAll()
         {

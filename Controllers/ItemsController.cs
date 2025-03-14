@@ -61,11 +61,10 @@ namespace Shopping_Cart_2.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            // 1- get item by id //اساسي
+    
             var item = _itemService.GetById(id);
             if (item is null) return NotFound();
-            // 3- create vm object
-            // تعريف غرض وسيط و اسناد الاساسي للوسيط
+
             EditItemVM model = new()
             {
                 Id = id,
@@ -86,7 +85,7 @@ namespace Shopping_Cart_2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditItemVM model )
         {
-            // 5- تطبيق الخدمة على البارمتر الغرض الوسيط
+
             if (!ModelState.IsValid)
             {
                 return View(model);
