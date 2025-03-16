@@ -19,7 +19,7 @@ namespace Shopping_Cart_2.Models
         public string UserId { get; set; } =string.Empty;
         public double ProductAverageRate { get; set; } = 0;
 
-        //for M -> 1 items -> category  
+        // Thiết lập quan hệ N-1 (Nhiều sản phẩm thuộc về 1 danh mục) 
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; } = 0;
         public Category Category { get; set; } = default!;
@@ -27,8 +27,8 @@ namespace Shopping_Cart_2.Models
 
         public Stock Stock { get; set; } = default!;
 
-        // for M -> M
-       // public ICollection<OrderItem> Orders { get; set; } = new List<OrderItem>();
+        // Thiết lập quan hệ N-N (Nhiều sản phẩm có thể xuất hiện trong nhiều đơn hàng)
+        // public ICollection<OrderItem> Orders { get; set; } = new List<OrderItem>();
         public List<Rating> Ratings { get; set; } = new List<Rating>();
         public List<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
         public List<CartDetail> CartDetail { get; set; } = new List<CartDetail>();

@@ -16,28 +16,33 @@ namespace Shopping_Cart_2.Services
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRatingService _ratingService;
+
+        // Khởi tạo dịch vụ với các dependency cần thiết
         public ItemService(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment, UserManager<IdentityUser> userManager, IHttpContextAccessor httpContextAccessor, IRatingService ratingService)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
-            _imagesPath = $"{_webHostEnvironment.WebRootPath}/assets/images/items";
+            _imagesPath = $"{_webHostEnvironment.WebRootPath}/assets/images/items"; // Đường dẫn lưu ảnh mặt hàng
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
             _ratingService = ratingService;
         }
-        //retrieves the user ID associated with the currently authenticated user
+
+        // Lấy ID của người dùng hiện đang được xác thực
         private string GetUserId()
         {
-            var principal = _httpContextAccessor.HttpContext.User; //currently authenticated user
+            var principal = _httpContextAccessor.HttpContext.User; // Người dùng hiện tại
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
+
+        // Lưu file ảnh bìa và trả về tên file
         public async Task<string> SaveCover(IFormFile cover)
         {
-            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}";
+            var fileName = $"{Guid.NewGuid()}{Path.GetExtension(cover.FileName)}"; // Tạo tên file duy nhất
             var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "assets", "images", "items", fileName);
 
-            // Ensure the directory exists
+            // Đảm bảo thư mục tồn tại
             var directory = Path.GetDirectoryName(path);
             if (!Directory.Exists(directory))
             {
@@ -45,64 +50,66 @@ namespace Shopping_Cart_2.Services
             }
 
             using var stream = new FileStream(path, FileMode.Create);
-            await cover.CopyToAsync(stream);
+            await cover.CopyToAsync(stream); // Lưu file vào hệ thống
 
             return fileName;
         }
-        public  IEnumerable<Item> GetAll()
+
+        // Lấy tất cả các mặt hàng đã được phê duyệt
+        public IEnumerable<Item> GetAll()
         {
-           
-            var Item = _context.items.Include(x => x.Category)
-                                     .Include(x => x.Stock)
-                                     .Include(x=>x.Ratings)
-                                     .Where(x=>x.IsApproved == true)
-                                     .AsNoTracking()
+            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+                                     .Include(x => x.Stock) // Bao gồm thông tin kho
+                                     .Include(x => x.Ratings) // Bao gồm đánh giá
+                                     .Where(x => x.IsApproved == true) // Chỉ lấy mặt hàng đã phê duyệt
+                                     .AsNoTracking() // Không theo dõi để tối ưu hiệu suất
                                      .ToList();
-            //for average product rate  // 
+
+            // Tính điểm đánh giá trung bình cho từng sản phẩm
             foreach (var d in Item)
             {
-
                 d.ProductAverageRate = _ratingService.GetProductRate(d.Id);
-
             }
             return Item;
-        } 
-        public  IEnumerable<Item> GetItemsByUserId()
+        }
+
+        // Lấy các mặt hàng theo ID người dùng
+        public IEnumerable<Item> GetItemsByUserId()
         {
             var userId = GetUserId();
             if (userId == null)
-                throw new UnauthorizedAccessException("user is not logged-in");
+                throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
 
-            var Item = _context.items.Include(x => x.Category)
-                                     .Include(x => x.Stock)
-                                     .Include(x=>x.Ratings)
-                                     .Where(x => x.UserId == userId)
-                                     .AsNoTracking()
+            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+                                     .Include(x => x.Stock) // Bao gồm thông tin kho
+                                     .Include(x => x.Ratings) // Bao gồm đánh giá
+                                     .Where(x => x.UserId == userId) // Lọc theo ID người dùng
+                                     .AsNoTracking() // Không theo dõi để tối ưu hiệu suất
                                      .ToList();
-                                      
+
             return Item;
         }
 
+        // Lấy thông tin một mặt hàng theo ID
         public Item? GetById(int id)
         {
-            var Item = _context.items.Include(x => x.Category)
-                                     .Include(x=>x.Stock)
-                                     .Include(x=>x.Ratings)
-                                     //.Include(x => x.Orders)
-                                     .AsNoTracking()
-                                     .SingleOrDefault(g => g.Id == id);
+            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+                                     .Include(x => x.Stock) // Bao gồm thông tin kho
+                                     .Include(x => x.Ratings) // Bao gồm đánh giá
+                                     .AsNoTracking() // Không theo dõi để tối ưu hiệu suất
+                                     .SingleOrDefault(g => g.Id == id); // Lấy mặt hàng duy nhất hoặc null
             return Item;
         }
 
-        public async Task Create(CreateItemVM vmItem , Stock st)
+        // Tạo một mặt hàng mới
+        public async Task Create(CreateItemVM vmItem, Stock st)
         {
             var userId = GetUserId();
             if (userId == null)
-                throw new InvalidOperationException("Invalid userid");
-            var coverName = await SaveCover(vmItem.Cover);
-            // this for adding Quantity of item to Stock Table
-            st.Quantity = vmItem.Quantity;
+                throw new InvalidOperationException("ID người dùng không hợp lệ");
 
+            var coverName = await SaveCover(vmItem.Cover); // Lưu ảnh bìa
+            st.Quantity = vmItem.Quantity; // Gán số lượng từ VM vào Stock
 
             Item item = new()
             {
@@ -112,76 +119,74 @@ namespace Shopping_Cart_2.Services
                 Cover = coverName,
                 CategoryId = vmItem.CategoryId,
                 UserId = userId,
-                Stock = st 
-
+                Stock = st // Gán thông tin kho
             };
-            await _context.items.AddAsync(item);  
-            await _context.SaveChangesAsync();
+            await _context.items.AddAsync(item); // Thêm mặt hàng vào cơ sở dữ liệu
+            await _context.SaveChangesAsync(); // Lưu thay đổi
         }
 
+        // Cập nhật thông tin một mặt hàng
         public async Task<Item?> Update(EditItemVM vmItem)
         {
-            // 4-  خدمة تعديل تجلب غرض اساسي من داتاسيت 
-            // ثم تسند (البارمتر) الغرض الوسيط الى الاساسي 
-            var item = await _context.items.Include(g => g.Category)
-                                            .Include(x=> x.Stock)
-                                           .SingleOrDefaultAsync(g => g.Id == vmItem.Id);
+            // Lấy mặt hàng từ cơ sở dữ liệu
+            var item = await _context.items.Include(g => g.Category) // Bao gồm thông tin danh mục
+                                            .Include(x => x.Stock) // Bao gồm thông tin kho
+                                            .SingleOrDefaultAsync(g => g.Id == vmItem.Id);
             if (item == null) return null;
 
+            // Cập nhật thông tin mặt hàng
             item.Name = vmItem.Name;
             item.Description = vmItem.Description;
             item.Price = vmItem.Price;
             item.CategoryId = vmItem.CategoryId;
             item.Stock.Quantity = vmItem.Quantity;
-             
 
-            //this for new cover
+            // Kiểm tra và cập nhật ảnh bìa nếu có
             var hasNewCover = vmItem.Cover is not null;
-            var oldCover = item.Cover; // to delete the oldcover if there is new one
+            var oldCover = item.Cover; // Lưu tên ảnh bìa cũ để xóa nếu cần
 
             if (hasNewCover)
             {
-                item.Cover = await SaveCover(vmItem.Cover!);
+                item.Cover = await SaveCover(vmItem.Cover!); // Lưu ảnh bìa mới
             }
-            //for delete old cover
-            var effectedRows = _context.SaveChanges();
+
+            var effectedRows = _context.SaveChanges(); // Lưu thay đổi vào cơ sở dữ liệu
 
             if (effectedRows > 0)
             {
                 if (hasNewCover)
                 {
                     var cover = Path.Combine(_imagesPath, oldCover);
-                    File.Delete(cover);
+                    File.Delete(cover); // Xóa ảnh bìa cũ
                 }
                 return item;
             }
             else
-            { // if update fail after choice new cover then delete new cover 
+            {
+                // Nếu cập nhật thất bại, xóa ảnh bìa mới vừa lưu
                 var cover = Path.Combine(_imagesPath, item.Cover);
                 File.Delete(cover);
                 return null;
             }
         }
 
+        // Xóa một mặt hàng
         public bool Delete(int id)
         {
-
             var isDeleted = false;
 
-            var item = _context.items.Find(id);
-
+            var item = _context.items.Find(id); // Tìm mặt hàng theo ID
             if (item is null)
                 return isDeleted;
 
-            _context.Remove(item);
-            var effectedRows = _context.SaveChanges();
+            _context.Remove(item); // Xóa mặt hàng khỏi cơ sở dữ liệu
+            var effectedRows = _context.SaveChanges(); // Lưu thay đổi
 
             if (effectedRows > 0)
             {
                 isDeleted = true;
-
                 var cover = Path.Combine(_imagesPath, item.Cover);
-                File.Delete(cover);
+                File.Delete(cover); // Xóa ảnh bìa của mặt hàng
             }
 
             return isDeleted;

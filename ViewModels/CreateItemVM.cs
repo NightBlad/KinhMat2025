@@ -7,12 +7,12 @@ namespace Shopping_Cart_2.ViewModels
 {
     public class CreateItemVM : BaseItemVM
     {
-       
-        [AllowedExtensions(FileSettings.AllowedExtensions)]
-        [MaxFileSize(FileSettings.MaxFileSizeInBytes)]
-        public IFormFile Cover { get; set; } = default!;
-        Stock Stock { get; set; } = default!;
+        // Ảnh bìa của mặt hàng, kiểm tra định dạng và kích thước file
+        [AllowedExtensions(FileSettings.AllowedExtensions)] // Chỉ cho phép các định dạng trong FileSettings
+        [MaxFileSize(FileSettings.MaxFileSizeInBytes)] // Giới hạn kích thước file theo FileSettings
+        public IFormFile Cover { get; set; } = default!; // File ảnh bìa khi tạo mặt hàng
 
-
+        // Thông tin kho hàng liên quan đến mặt hàng
+        Stock Stock { get; set; } = default!; // Đối tượng Stock để quản lý số lượng
     }
 }

@@ -7,16 +7,12 @@ namespace Shopping_Cart_2.ViewModels
 {
     public class EditItemVM : BaseItemVM
     {
+        public int Id { get; set; } // Mã sản phẩm
 
-        public int Id { get; set; }
+        public string? CurrentCover { get; set; } // Ảnh bìa hiện tại của sản phẩm
 
-        public string? CurrentCover { get; set; }
-
-        [AllowedExtensions(FileSettings.AllowedExtensions)]
-        [MaxFileSize(FileSettings.MaxFileSizeInBytes)]
-        public IFormFile? Cover { get; set; } = default!;
-
-        
-
+        [AllowedExtensions(FileSettings.AllowedExtensions)] // Kiểm tra định dạng tệp được phép
+        [MaxFileSize(FileSettings.MaxFileSizeInBytes)] // Giới hạn kích thước tệp tối đa
+        public IFormFile? Cover { get; set; } = default!; // Ảnh bìa mới của sản phẩm
     }
 }

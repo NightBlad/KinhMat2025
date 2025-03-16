@@ -4,7 +4,7 @@
     {
         public int ItemId { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "Quantity must be a non-negative value.")]
+        [Range(0, int.MaxValue, ErrorMessage = "Số lượng phải là giá trị không âm.")]
         public int Quantity { get; set; } = 0;
     }
 }
