@@ -1,4 +1,4 @@
-* {
+﻿* {
     font-family: "Merriweather Sans", sans-serif;
 }
 
@@ -81,12 +81,25 @@ footer {
 .hero {
     padding-top: 10.5rem;
     padding-bottom: 6rem;
-    background-image: url("../assets/img/bg/bg (4).jpg");
+    position: relative; /* Để .hero-bg có thể định vị chính xác */
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("../assets/img/bg/background1.jpg");
     background-repeat: no-repeat;
     background-attachment: scroll;
     background-position: center center;
     background-size: cover;
+    opacity: 1;
+    transition: opacity 1s ease-in-out; /* Hiệu ứng fade mượt mà */
+    z-index: -1; /* Đặt hình nền phía sau nội dung */
 }
+
 @media (min-width: 768px) {
     .hero {
         padding-top: 17rem;
