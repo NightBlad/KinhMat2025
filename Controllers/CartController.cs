@@ -58,9 +58,20 @@ namespace Shopping_Cart_2.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            bool isCheckedOut = await _cartService.DoCheckout(model);
-            if (!isCheckedOut)
+            try
+            {
+                bool isCheckedOut = await _cartService.DoCheckout(model);
+                if (!isCheckedOut)
+                {
+                    TempData["ErrorMessage"] = "Something went wrong while processing your order. Please try again.";
+                    return RedirectToAction(nameof(OrderFailure));
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Order failed: {ex.Message}";
                 return RedirectToAction(nameof(OrderFailure));
+            }
 
             return RedirectToAction(nameof(OrderSuccess));
         }
@@ -74,6 +85,7 @@ namespace Shopping_Cart_2.Controllers
         // Hiển thị trang thanh toán thất bại
         public IActionResult OrderFailure()
         {
+            ViewData["ErrorMessage"] = TempData["ErrorMessage"];
             return View();
         }
     }

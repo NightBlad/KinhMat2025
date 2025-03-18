@@ -5,20 +5,12 @@ using Shopping_Cart_2.ViewModels;
 
 namespace Shopping_Cart_2.Controllers
 {
-    public class ItemsController : Controller
+    public class ItemsController(ICategoryService categoryService, IItemService itemService, IRatingService ratingService, IUserService userService) : Controller
     {
-        private readonly ICategoryService _categoryService;
-        private readonly IItemService _itemService;
-        private readonly IRatingService _ratingService;
-        private readonly IUserService _userService;
-
-        public ItemsController(ICategoryService categoryService, IItemService itemService, IRatingService ratingService, IUserService userService)
-        {
-            _categoryService = categoryService;
-            _itemService = itemService;
-            _ratingService = ratingService;
-            _userService = userService;
-        }
+        private readonly ICategoryService _categoryService = categoryService;
+        private readonly IItemService _itemService = itemService;
+        private readonly IRatingService _ratingService = ratingService;
+        private readonly IUserService _userService = userService;
 
         [Authorize] // Yêu cầu người dùng phải đăng nhập để truy cập danh sách sản phẩm
         public IActionResult Index()
@@ -45,7 +37,7 @@ namespace Shopping_Cart_2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             CreateItemVM vm = new()
             {

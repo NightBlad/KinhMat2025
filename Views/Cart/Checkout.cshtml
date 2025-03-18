@@ -1,4 +1,7 @@
 ﻿@using Shopping_Cart_2.Constants
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
 @model CheckoutModel
 @{
     ViewData["Title"] = "Thanh Toán";
@@ -9,31 +12,31 @@
 
         <div class="row form-outline mb-4">
             <label class="fw-bold" asp-for="Name">Họ và Tên*</label>
-            <input type="text" class="form-control" asp-for="Name" />
+            <input type="text" class="form-control" asp-for="Name" required />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="row mb-4">
             <label class="fw-bold" asp-for="Email">Email*</label>
-            <input type="text" class="form-control" asp-for="Email" />
+            <input type="email" class="form-control" asp-for="Email" required />
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="row mb-4">
             <label class="fw-bold" asp-for="MobileNumber">Số điện thoại*</label>
-            <input type="text" class="form-control" asp-for="MobileNumber" />
+            <input type="tel" class="form-control" asp-for="MobileNumber" required />
             <span asp-validation-for="MobileNumber" class="text-danger"></span>
         </div>
 
         <div class="row mb-4">
             <label class="fw-bold" asp-for="Address">Địa chỉ*</label>
-            <textarea class="form-control" asp-for="Address" rows="5"></textarea>
+            <textarea class="form-control" asp-for="Address" rows="5" required></textarea>
             <span asp-validation-for="Address" class="text-danger"></span>
         </div>
 
         <div class="row mb-4">
-            <span class="mr-2 fw-bold">Phương thức thanh toán*</span>
-            <select asp-for="PaymentMethod" class="form-control">
+            <label class="fw-bold" asp-for="PaymentMethod">Phương thức thanh toán*</label>
+            <select asp-for="PaymentMethod" class="form-control" required>
                 <option value="">Chọn phương thức thanh toán</option>
                 @foreach (var method in Enum.GetValues(typeof(PaymentMethods)))
                 {
