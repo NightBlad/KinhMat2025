@@ -8,45 +8,38 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Shopping_Cart_2.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, IItemService itemService, ApplicationDbContext context) : Controller
     {
-        private readonly ILogger<HomeController> _logger; // Đối tượng dùng để ghi log hệ thống
-        private readonly ApplicationDbContext _context; // Kết nối database
-        private readonly IItemService _itemService; // Service quản lý sản phẩm
-
-        // Constructor, khởi tạo các dịch vụ
-        public HomeController(ILogger<HomeController> logger, IItemService itemService, ApplicationDbContext context)
-        {
-            _logger = logger;
-            _itemService = itemService;
-            _context = context;
-        }
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IItemService _itemService = itemService;
+        private readonly ApplicationDbContext _context = context;
 
         // Trang chủ
         public async Task<IActionResult> Index()
         {
+            await Task.CompletedTask;
             return View();
         }
 
         // Trang hiển thị danh sách sản phẩm, có tìm kiếm và lọc danh mục
         public async Task<IActionResult> Products(string? seachName, string? categoryName)
         {
-            var item = _itemService.GetAll(); // Lấy toàn bộ sản phẩm
+            var item = await Task.Run(() => _itemService.GetAll()); // Lấy toàn bộ sản phẩm
 
             // Tìm kiếm theo tên hoặc mô tả sản phẩm
             if (!string.IsNullOrEmpty(seachName))
             {
-                item = item.Where(g => g.Name.ToLower().Contains(seachName.ToLower())
-                    || g.Description.ToLower().Contains(seachName.ToLower())).ToList();
+                item = item.Where(g => g.Name != null && g.Name.Contains(seachName, StringComparison.OrdinalIgnoreCase)
+                    || g.Description != null && g.Description.Contains(seachName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
             // Lọc theo danh mục sản phẩm
             else if (categoryName != null)
             {
-                item = item.Where(g => g.Category.Name.ToLower() == categoryName.ToLower()).ToList();
+                item = item.Where(g => g.Category != null && g.Category.Name != null && g.Category.Name.Equals(categoryName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
             ViewBag.seachName = seachName; // Lưu giá trị tìm kiếm để hiển thị lại trên giao diện
-            ViewBag.categories = _context.categories.ToList(); // Lấy danh sách danh mục sản phẩm
+            ViewBag.categories = await _context.Categories.ToListAsync(); // Lấy danh sách danh mục sản phẩm
 
             return View(item); // Trả về danh sách sản phẩm phù hợp
         }

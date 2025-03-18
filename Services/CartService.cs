@@ -1,51 +1,44 @@
 ﻿namespace Shopping_Cart_2.Services
 {
-    public class CartService : ICartService
+    public class CartService(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor,
+        UserManager<IdentityUser> userManager) : ICartService
     {
-        private readonly ApplicationDbContext _db;
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public CartService(ApplicationDbContext db, IHttpContextAccessor httpContextAccessor,
-            UserManager<IdentityUser> userManager)
-        {
-            _db = db;
-            _userManager = userManager;
-            _httpContextAccessor = httpContextAccessor;
-        }
+        private readonly ApplicationDbContext _db = db;
+        private readonly UserManager<IdentityUser> _userManager = userManager;
+        private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
         // Lấy ID của người dùng hiện đang được xác thực
         private string GetUserId()
         {
-            var principal = _httpContextAccessor.HttpContext.User; // Người dùng hiện đang được xác thực
-            string userId = _userManager.GetUserId(principal);
-            return userId;
+            var principal = _httpContextAccessor.HttpContext?.User; // Người dùng hiện đang được xác thực
+            if (principal != null)
+            {
+                string userId = _userManager.GetUserId(principal) ?? throw new InvalidOperationException("User ID is null.");
+                return userId;
+            }
+            throw new InvalidOperationException("No authenticated user found.");
         }
 
         // Lấy giỏ hàng của một người dùng cụ thể
         public async Task<ShoppingCart> GetCart(string userId)
         {
-            var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId);
+            var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new InvalidOperationException("Shopping cart not found.");
             return cart;
         }
 
         // Thêm một mặt hàng vào giỏ hàng
         public async Task<int> AddItem(int itmId, int qty)
         {
-            // userId => ShCart => cartDItem
             string userId = GetUserId();
-            // Bắt đầu giao dịch
             using var transaction = _db.Database.BeginTransaction();
 
             try
             {
-                // 1- Lấy ID của người dùng
                 if (string.IsNullOrEmpty(userId))
                 {
                     throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
                 }
 
-                // 2- Lấy giỏ hàng của người dùng
                 var ShCart = await GetCart(userId);
                 if (ShCart is null)
                 {
@@ -57,18 +50,23 @@
                 }
                 await _db.SaveChangesAsync();
 
-                // 3- Lấy chi tiết giỏ hàng mà ID của nó bằng ID giỏ hàng của người dùng hiện tại
-                // và ID mặt hàng bằng ID được truyền vào khi nhấn nút
                 var cartDItem = await _db.CartDetails
-                                  .FirstOrDefaultAsync(a => a.ShoppingCartId == ShCart.Id && a.ItemId == itmId);
+                                      .FirstOrDefaultAsync(a => a.ShoppingCartId == ShCart.Id && a.ItemId == itmId);
                 if (cartDItem is not null)
                 {
-                    cartDItem.Quantity += qty; // Tăng số lượng nếu mặt hàng đã có trong giỏ
+                    cartDItem.Quantity += qty;
                     await _db.SaveChangesAsync();
                 }
                 else
                 {
-                    var item = await _db.items.FindAsync(itmId);
+                    var item = await _db.Items.FindAsync(itmId);
+                    if (item != null)
+                    {
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Item not found.");
+                    }
 
                     cartDItem = new CartDetail
                     {
@@ -80,9 +78,13 @@
                     await _db.CartDetails.AddAsync(cartDItem);
                 }
                 await _db.SaveChangesAsync();
-                transaction.Commit(); // Xác nhận giao dịch
+                transaction.Commit();
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine(ex.Message);
+            }
             var cartItemCount = await GetCartItemCount(userId);
             return cartItemCount;
         }
@@ -96,20 +98,26 @@
                 if (string.IsNullOrEmpty(userId))
                     throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
                 var ShCart = await GetCart(userId);
-                if (ShCart is null)
+                if (ShCart is not null)
+                {
+                }
+                else
                     throw new InvalidOperationException("Giỏ hàng không hợp lệ");
-                // Phần chi tiết giỏ hàng
                 var cartDItem = _db.CartDetails
                                   .FirstOrDefault(a => a.ShoppingCartId == ShCart.Id && a.ItemId == itmId);
                 if (cartDItem is null)
                     throw new InvalidOperationException("Không có mặt hàng nào trong giỏ");
                 else if (cartDItem.Quantity == 1)
-                    _db.CartDetails.Remove(cartDItem); // Xóa mặt hàng nếu số lượng bằng 1
+                    _db.CartDetails.Remove(cartDItem);
                 else
-                    cartDItem.Quantity = cartDItem.Quantity - 1; // Giảm số lượng nếu lớn hơn 1
+                    cartDItem.Quantity--;
                 _db.SaveChanges();
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                // Log the exception or handle it as needed
+                Console.WriteLine(ex.Message);
+            }
             var cartItemCount = await GetCartItemCount(userId);
             return cartItemCount;
         }
@@ -118,18 +126,21 @@
         public async Task<ShoppingCart> GetUserCart()
         {
             var userId = GetUserId();
-            if (userId == null)
-                throw new InvalidOperationException("ID người dùng không hợp lệ");
-            var shoppingCart = await _db.ShoppingCarts
-                                  .Include(a => a.CartDetails)
-                                  .ThenInclude(a => a.Item)
-                                  .ThenInclude(a => a.Stock) // Dùng để xem kho hàng
-                                  .Include(b => b.CartDetails)
-                                  .ThenInclude(b => b.Item)
-                                  .ThenInclude(b => b.Category) // Liên kết với danh mục
-                                  .Where(a => a.UserId == userId)
-                                  .FirstOrDefaultAsync();
-            return shoppingCart;
+            if (userId != null)
+            {
+                var shoppingCart = await _db.ShoppingCarts
+                                              .Include(a => a.CartDetails)
+                                              .ThenInclude(a => a.Item)
+                                              .ThenInclude(a => a.Stock) // Dùng để xem kho hàng
+                                              .Include(b => b.CartDetails)
+                                              .ThenInclude(b => b.Item)
+                                              .ThenInclude(b => b.Category) // Liên kết với danh mục
+                                              .Where(a => a.UserId == userId)
+                                              .FirstOrDefaultAsync();
+                return shoppingCart ?? throw new InvalidOperationException("Shopping cart not found.");
+            }
+
+            throw new InvalidOperationException("ID người dùng không hợp lệ");
         }
 
         // Đếm số lượng mặt hàng trong giỏ hàng
@@ -160,77 +171,78 @@
             using var transaction = _db.Database.BeginTransaction();
             try
             {
-                // 1- Lấy ID người dùng
                 var userId = GetUserId();
                 if (string.IsNullOrEmpty(userId))
                     throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
 
-                // 2- Lấy giỏ hàng của người dùng
                 var ShCart = await GetCart(userId);
-                if (ShCart is null)
-                    throw new InvalidOperationException("Giỏ hàng không hợp lệ");
-
-                // 3- Lấy tất cả chi tiết giỏ hàng của giỏ hàng đó
-                var cartDetail = _db.CartDetails
-                                    .Where(a => a.ShoppingCartId == ShCart.Id).ToList();
-                if (cartDetail.Count == 0)
-                    throw new InvalidOperationException("Giỏ hàng trống");
-
-                // Kiểm tra trạng thái "Đang chờ"
-                var pendingRecord = _db.orderStatuses.FirstOrDefault(s => s.StatusName == "Pending");
-                if (pendingRecord is null)
-                    throw new InvalidOperationException("Trạng thái đơn hàng không có trạng thái Đang chờ");
-
-                // 4- Tạo đơn hàng mới và thêm vào cơ sở dữ liệu
-                Order order = new Order
+                if (ShCart is not null)
                 {
-                    UserId = userId,
-                    CreateDate = DateTime.UtcNow,
-                    OrderStatusId = pendingRecord.Id, // Trạng thái đang chờ
-                    Name = model.Name,
-                    Email = model.Email,
-                    MobileNumber = model.MobileNumber,
-                    PaymentMethod = model.PaymentMethod,
-                    Address = model.Address,
-                    IsPaid = false
-                };
-                await _db.Orders.AddAsync(order);
-                await _db.SaveChangesAsync();
+                    var cartDetail = _db.CartDetails
+                                                    .Where(a => a.ShoppingCartId == ShCart.Id).ToList();
+                    if (cartDetail.Count == 0)
+                        throw new InvalidOperationException("Giỏ hàng trống");
 
-                // 5- Tạo chi tiết đơn hàng cho mỗi chi tiết giỏ hàng
-                foreach (var c in cartDetail)
-                {
-                    var orderDetail = new OrderDetail
+                    var pendingRecord = _db.OrderStatuses.FirstOrDefault(s => s.StatusName == "Pending");
+                    if (pendingRecord is not null)
                     {
-                        ItemId = c.ItemId,
-                        OrderId = order.Id,
-                        Quantity = c.Quantity,
-                        UnitPrice = c.UnitPrice
+                    }
+                    else
+                        throw new InvalidOperationException("Trạng thái đơn hàng không có trạng thái Đang chờ");
+
+                    Order order = new()
+                    {
+                        UserId = userId,
+                        CreateDate = DateTime.UtcNow,
+                        OrderStatusId = pendingRecord.Id,
+                        Name = model.Name,
+                        Email = model.Email,
+                        MobileNumber = model.MobileNumber,
+                        PaymentMethod = model.PaymentMethod.ToString(),
+                        Address = model.Address,
+                        IsPaid = false
                     };
-                    await _db.OrderDetails.AddAsync(orderDetail);
+                    await _db.Orders.AddAsync(order);
+                    await _db.SaveChangesAsync();
 
-                    // Cập nhật kho hàng tại đây
-                    var stock = await _db.Stocks.FirstOrDefaultAsync(a => a.ItemId == c.ItemId);
-                    if (stock is null)
+                    foreach (var c in cartDetail)
                     {
-                        throw new InvalidOperationException("Kho hàng trống");
+                        var orderDetail = new OrderDetail
+                        {
+                            ItemId = c.ItemId,
+                            OrderId = order.Id,
+                            Quantity = c.Quantity,
+                            UnitPrice = c.UnitPrice
+                        };
+                        await _db.OrderDetails.AddAsync(orderDetail);
+
+                        var stock = await _db.Stocks.FirstOrDefaultAsync(a => a.ItemId == c.ItemId);
+                        if (stock is not null)
+                        {
+                            if (c.Quantity > stock.Quantity)
+                            {
+                                throw new InvalidOperationException($"Chỉ có {stock.Quantity} mặt hàng trong kho");
+                            }
+                            stock.Quantity -= c.Quantity;
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Kho hàng trống");
+                        }
                     }
-                    if (c.Quantity > stock.Quantity)
-                    {
-                        throw new InvalidOperationException($"Chỉ có {stock.Quantity} mặt hàng trong kho");
-                    }
-                    // Giảm số lượng trong bảng kho
-                    stock.Quantity -= c.Quantity;
+
+                    _db.CartDetails.RemoveRange(cartDetail);
+                    _db.SaveChanges();
+                    transaction.Commit();
+                    return true;
                 }
 
-                // 6- Xóa chi tiết giỏ hàng
-                _db.CartDetails.RemoveRange(cartDetail);
-                _db.SaveChanges();
-                transaction.Commit(); // Xác nhận giao dịch
-                return true;
+                throw new InvalidOperationException("Giỏ hàng không hợp lệ");
             }
             catch (Exception ex)
             {
+                // Log the exception or handle it as needed
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

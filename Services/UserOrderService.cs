@@ -106,7 +106,7 @@ namespace Shopping_Cart_2.Services
         // Lấy danh sách trạng thái đơn hàng dưới dạng SelectListItem để sử dụng trong dropdown
         public IEnumerable<SelectListItem> GetSelectLists()
         {
-            return _db.orderStatuses.Select(os => new SelectListItem
+            return _db.OrderStatuses.Select(os => new SelectListItem
             {
                 Value = os.Id.ToString(), // Gán ID trạng thái
                 Text = os.StatusName // Gán tên trạng thái

@@ -31,7 +31,7 @@ namespace Shopping_Cart_2.Services
                 throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
 
             // Lấy danh sách mặt hàng cùng thông tin kho của người dùng và chuyển đổi thành StockDisplayModel
-            var itemsWithStock = await _db.items
+            var itemsWithStock = await _db.Items
                                          .Include(x => x.Stock) // Bao gồm thông tin kho
                                          .Where(x => x.UserId == userId) // Lọc theo ID người dùng
                                          .Select(i => new StockDisplayModel

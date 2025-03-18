@@ -30,10 +30,10 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 // Bỏ comment dưới trong lượt chạy đầu tiên để tạo admin
-//using (var scope = app.Services.CreateScope())
-//{
-//    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
-//}
+using (var scope = app.Services.CreateScope())
+{
+    await DbSeeder.SeedDefaultData(scope.ServiceProvider);
+}
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

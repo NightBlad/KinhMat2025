@@ -11,25 +11,13 @@ namespace Shopping_Cart_2.Controllers
 {
     // Chỉ cho phép Admin truy cập vào Controller này
     [Authorize(Roles = nameof(Roles.Admin))]
-    public class AdminOperationsController : Controller
+    public class AdminOperationsController(IUserOrderService userOrderService, IManageItemService manageItemService, ICategoryService categoryService) : Controller
     {
-        // Các service dùng để xử lý dữ liệu
-        private readonly IUserOrderService _userOrderService; // Dịch vụ xử lý đơn hàng
-        private readonly IManageItemService _manageItemService; // Dịch vụ quản lý sản phẩm
-        private readonly ICategoryService _categoryService; // Dịch vụ quản lý danh mục
-
-        // Inject các service thông qua constructor
-        public AdminOperationsController(IUserOrderService userOrderService, IManageItemService manageItemService, ICategoryService categoryService)
-        {
-            _userOrderService = userOrderService;
-            _manageItemService = manageItemService;
-            _categoryService = categoryService;
-        }
 
         // Lấy danh sách tất cả đơn hàng
         public async Task<IActionResult> AllOrders()
         {
-            var orders = await _userOrderService.AllOrders();
+            var orders = await userOrderService.AllOrders();
             return View(orders);
         }
 
@@ -37,13 +25,8 @@ namespace Shopping_Cart_2.Controllers
         [HttpGet]
         public async Task<IActionResult> UpdateOrderStatus(int orderId)
         {
-            var order = await _userOrderService.GetOrderById(orderId);
-            if (order == null)
-            {
-                throw new InvalidOperationException($"Order with id:{orderId} does not found.");
-            }
-
-            var orderStatusList = _userOrderService.GetSelectLists(); // Lấy danh sách trạng thái đơn hàng có thể chọn
+            var order = await userOrderService.GetOrderById(orderId) ?? throw new InvalidOperationException($"Order with id:{orderId} does not found.");
+            var orderStatusList = userOrderService.GetSelectLists(); // Lấy danh sách trạng thái đơn hàng có thể chọn
             var data = new UpdateOrderStatusModel
             {
                 OrderId = orderId,
@@ -61,11 +44,11 @@ namespace Shopping_Cart_2.Controllers
             {
                 if (!ModelState.IsValid) // Kiểm tra dữ liệu nhập vào có hợp lệ không
                 {
-                    data.OrderStatusList = _userOrderService.GetSelectLists(); // Nếu lỗi, tải lại danh sách trạng thái
+                    data.OrderStatusList = userOrderService.GetSelectLists(); // Nếu lỗi, tải lại danh sách trạng thái
                     return View(data);
                 }
 
-                await _userOrderService.ChangeOrderStatus(data); // Cập nhật trạng thái đơn hàng
+                await userOrderService.ChangeOrderStatus(data); // Cập nhật trạng thái đơn hàng
                 TempData["msg"] = "Updated successfully"; // Gửi thông báo cập nhật thành công
             }
             catch
@@ -80,9 +63,9 @@ namespace Shopping_Cart_2.Controllers
         {
             try
             {
-                await _userOrderService.TogglePaymentStatus(orderId);
+                await userOrderService.TogglePaymentStatus(orderId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log lỗi ở đây
             }
@@ -100,9 +83,9 @@ namespace Shopping_Cart_2.Controllers
         {
             try
             {
-                await _manageItemService.ToggleApprovementStatus(ItemId);
+                await manageItemService.ToggleApprovementStatus(ItemId);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // Log lỗi ở đây
             }
@@ -112,14 +95,14 @@ namespace Shopping_Cart_2.Controllers
         // Lấy danh sách tất cả sản phẩm
         public async Task<IActionResult> GetAllItems()
         {
-            var items = await _manageItemService.GetAllItems();
+            var items = await manageItemService.GetAllItems();
             return View(items);
         }
 
         // Lấy danh sách tất cả danh mục
         public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _categoryService.GetAllCategories();
+            var categories = await categoryService.GetAllCategories();
             return View(categories);
         }
 
@@ -135,7 +118,7 @@ namespace Shopping_Cart_2.Controllers
         {
             if (ModelState.IsValid) // Kiểm tra dữ liệu nhập vào
             {
-                await _categoryService.AddCategory(category);
+                await categoryService.AddCategory(category);
                 return RedirectToAction(nameof(GetAllCategories)); // Quay lại danh sách danh mục
             }
             return View(category);
@@ -144,7 +127,7 @@ namespace Shopping_Cart_2.Controllers
         // Hiển thị form chỉnh sửa danh mục
         public async Task<IActionResult> EditCategory(int id)
         {
-            var category = await _categoryService.GetCategoryById(id);
+            var category = await categoryService.GetCategoryById(id);
             if (category == null)
             {
                 return NotFound();
@@ -158,7 +141,7 @@ namespace Shopping_Cart_2.Controllers
         {
             if (ModelState.IsValid) // Kiểm tra dữ liệu nhập vào
             {
-                await _categoryService.UpdateCategory(category);
+                await categoryService.UpdateCategory(category);
                 return RedirectToAction(nameof(GetAllCategories)); // Quay lại danh sách danh mục
             }
             return View(category);
@@ -167,7 +150,7 @@ namespace Shopping_Cart_2.Controllers
         // Hiển thị form xác nhận xóa danh mục
         public async Task<IActionResult> DeleteCategory(int id)
         {
-            var category = await _categoryService.GetCategoryById(id);
+            var category = await categoryService.GetCategoryById(id);
             if (category == null)
             {
                 return NotFound();
@@ -179,7 +162,7 @@ namespace Shopping_Cart_2.Controllers
         [HttpPost, ActionName("DeleteCategory")]
         public async Task<IActionResult> DeleteCategoryConfirmed(int id)
         {
-            await _categoryService.DeleteCategory(id);
+            await categoryService.DeleteCategory(id);
             return RedirectToAction(nameof(GetAllCategories)); // Quay lại danh sách danh mục
         }
     }

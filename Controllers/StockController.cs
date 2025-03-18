@@ -2,15 +2,9 @@
 {
     // [Authorize] đảm bảo chỉ những người dùng đã đăng nhập mới có thể truy cập controller này.
     [Authorize]
-    public class StockController : Controller
+    public class StockController(IStockService stockService) : Controller
     {
-        private readonly IStockService _stockService; // Dịch vụ quản lý kho hàng.
-
-        // Constructor nhận vào service để quản lý kho hàng.
-        public StockController(IStockService stockService)
-        {
-            _stockService = stockService;
-        }
+        private readonly IStockService _stockService = stockService; // Dịch vụ quản lý kho hàng.
 
         // Hiển thị danh sách tồn kho của tất cả sản phẩm.
         public async Task<IActionResult> Index()
@@ -47,7 +41,7 @@
                 await _stockService.ManageStock(model); // Gọi service để cập nhật kho hàng.
                 TempData["successMessage"] = "Cập nhật kho hàng thành công."; // Thông báo thành công.
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 TempData["errorMessage"] = "Đã xảy ra lỗi!"; // Thông báo lỗi nếu có lỗi xảy ra.
             }
