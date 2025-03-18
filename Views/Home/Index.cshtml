@@ -4,11 +4,12 @@
     ViewData["Title"] = "Trang Chủ";
 }
 <!-- Phần mở đầu -->
-<div class="bg-dark text-secondary text-center hero">
+<div class="text-secondary text-center hero" style="background: transparent;">
+    <div class="hero-bg"></div>
     <div class="container py-5">
-        <h1 class="display-5 fw-bold text-white">Thế giới kính thời trang Kool!</h1>
+        <h1 class="display-5 fw-bold text-black">Thế giới kính thời trang Kool!</h1>
         <div class="mx-auto">
-            <p class="fs-5 mb-4" style="color:white">Đeo kính không chỉ là nhìn rõ hơn, mà còn là thể hiện phong cách!</p>
+            <p class="fs-5 mb-4" style="color:black">Đeo kính không chỉ là nhìn rõ hơn, mà còn là thể hiện phong cách!</p>
             <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
                 <div class="pb-3">
                     <a class="btn btn-dark btn-lg text-uppercase" style="border-radius:25px" href="#services">Khám phá ngay</a>
@@ -46,7 +47,7 @@
                 <p class="text-muted">Đặt hôm nay – Có ngay ngày mai. Freeship toàn quốc!</p>
             </div>
             <div class="col-md-4">
-                <span class="fa-stack fa-4x">
+                <span class="fa-stack fa-4x">q
                     <i class="fas fa-circle fa-stack-2x text-primary"></i>
                     <i class="fas fa-check-circle fa-stack-1x fa-inverse"></i>
                 </span>
@@ -56,3 +57,26 @@
         </div>
     </div>
 </section>
+
+<!-- Thêm JavaScript ở đây -->
+<script>
+    const heroBg = document.querySelector('.hero-bg');
+    const images = [
+        'url("../assets/img/bg/background1.jpg")',
+        'url("../assets/img/bg/background2.jpg")',
+        'url("../assets/img/bg/background3.jpg")'
+    ];
+    let currentIndex = 0;
+
+    function changeBackground() {
+        heroBg.style.opacity = 0;
+
+        setTimeout(() => {
+            currentIndex = (currentIndex + 1) % images.length;
+            heroBg.style.backgroundImage = images[currentIndex];
+            heroBg.style.opacity = 1;
+        }, 1000);
+    }
+
+    setInterval(changeBackground, 4000);
+</script>
