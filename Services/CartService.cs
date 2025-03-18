@@ -117,10 +117,8 @@
                                   .FirstOrDefault(a => a.ShoppingCartId == ShCart.Id && a.ItemId == itmId);
                 if (cartDItem is null)
                     throw new InvalidOperationException("Không có mặt hàng nào trong giỏ");
-                else if (cartDItem.Quantity == 1)
-                    _db.CartDetails.Remove(cartDItem);
                 else
-                    cartDItem.Quantity--;
+                    _db.CartDetails.Remove(cartDItem);
                 _db.SaveChanges();
             }
             catch (Exception ex)
