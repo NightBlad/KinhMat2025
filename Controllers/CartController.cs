@@ -6,14 +6,9 @@ using Shopping_Cart_2.Models;
 namespace Shopping_Cart_2.Controllers
 {
     [Authorize] // Yêu cầu đăng nhập để truy cập giỏ hàng
-    public class CartController : Controller
+    public class CartController(ICartService cartService) : Controller
     {
-        private readonly ICartService _cartService;
-
-        public CartController(ICartService cartService)
-        {
-            _cartService = cartService;
-        }
+        private readonly ICartService _cartService = cartService;
 
         // Thêm sản phẩm vào giỏ hàng với số lượng mặc định là 1
         public async Task<IActionResult> AddItem(int itemId, int qty = 1, int redirect = 0)
@@ -27,7 +22,7 @@ namespace Shopping_Cart_2.Controllers
         // Xóa sản phẩm khỏi giỏ hàng
         public async Task<IActionResult> RemoveItem(int itemId)
         {
-            var cartCount = await _cartService.RemoveItem(itemId);
+            _ = await _cartService.RemoveItem(itemId);
             return RedirectToAction("GetUserCart");
         }
 

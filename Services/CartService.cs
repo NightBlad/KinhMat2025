@@ -22,7 +22,17 @@
         // Lấy giỏ hàng của một người dùng cụ thể
         public async Task<ShoppingCart> GetCart(string userId)
         {
-            var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId) ?? throw new InvalidOperationException("Shopping cart not found.");
+            var cart = await _db.ShoppingCarts.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (cart == null)
+            {
+                cart = new ShoppingCart
+                {
+                    UserId = userId,
+                    CartDetails = []
+                };
+                await _db.ShoppingCarts.AddAsync(cart);
+                await _db.SaveChangesAsync();
+            }
             return cart;
         }
 
@@ -137,7 +147,19 @@
                                               .ThenInclude(b => b.Category) // Liên kết với danh mục
                                               .Where(a => a.UserId == userId)
                                               .FirstOrDefaultAsync();
-                return shoppingCart ?? throw new InvalidOperationException("Shopping cart not found.");
+
+                if (shoppingCart == null)
+                {
+                    shoppingCart = new ShoppingCart
+                    {
+                        UserId = userId,
+                        CartDetails = []
+                    };
+                    await _db.ShoppingCarts.AddAsync(shoppingCart);
+                    await _db.SaveChangesAsync();
+                }
+
+                return shoppingCart;
             }
 
             throw new InvalidOperationException("ID người dùng không hợp lệ");
