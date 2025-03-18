@@ -2,43 +2,41 @@
 @model IEnumerable<Item>
 
 @{
-
-    ViewData["Title"] = "Item";
+    ViewData["Title"] = "Sản phẩm";
 }
-<div class="container  ">
-    <p class="ptable ">  Manage Your Products In One Click</p>
+<div class="container">
+    <p class="ptable">Quản lý sản phẩm</p>
     <div class="add-bt">
         <a class="btn btn-secondary btn-lg" asp-action="Create">
             <i class="bi bi-plus-circle-dotted"></i>
-            Add Item
+            Thêm sản phẩm
         </a>
     </div>
-
 
     @if (!Model.Any())
     {
         <div class="alert alert-warning mt-5">
-            <h4 class="alert-heading">No Item!</h4>
-            <p class="mb-0">No Items were added yet.</p>
+            <h4 class="alert-heading">Không có sản phẩm!</h4>
+            <p class="mb-0">Chưa có sản phẩm nào được thêm.</p>
         </div>
     }
     else
     {
         <div>
-            <table class="table table-hover border-primary " style="width:100%" id="example">
+            <table class="table table-hover border-primary" style="width:100%" id="example">
                 <thead>
                     <tr>
-                        <th>Item</th>
-                        <th>User</th>
-                        <th>Image</th>
-                        <th>Is Approved</th>
-                        <th></th>
+                        <th>Tên sản phẩm</th>
+                        <th>Người dùng</th>
+                        <th>Hình ảnh</th>
+                        <th>Đã duyệt</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var g in Model)
                     {
-                        <tr class="border-1 border-success " style="justify-content:center ">
+                        <tr class="border-1 border-success" style="justify-content:center">
                             <td>@g.Name</td>
                             <td>@User.Identity?.Name</td>
                             <td>
@@ -46,7 +44,7 @@
                                     <img src="@($"{FileSettings.ImagesPath}/{g.Cover}")" alt="@g.Name" style="width:100px;height:100px" />
                                 </div>
                             </td>
-                            <td> @g.IsApproved </td>
+                            <td>@(g.IsApproved ? "Đã duyệt" : "Chưa duyệt")</td>
                             <td class="align-middle">
                                 <div class="d-flex justify-content-end">
                                     <a class="btn btn-info rounded rounded-3 me-2" asp-action="Edit" asp-route-id="@g.Id">
@@ -65,17 +63,12 @@
     }
 </div>
 
-
-
 @section Scripts
 {
     <script>
         $(document).ready(function () {
             $('#example').DataTable({ responsive: true });
-
         });
     </script>
     <script src="~/js/item-delete.js"></script>
-
-
 }
