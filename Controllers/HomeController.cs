@@ -39,7 +39,7 @@ namespace Shopping_Cart_2.Controllers
             }
 
             ViewBag.seachName = seachName; // Lưu giá trị tìm kiếm để hiển thị lại trên giao diện
-            ViewBag.categories = await _context.categories.ToListAsync(); // Lấy danh sách danh mục sản phẩm
+            ViewBag.categories = await _context.Categories.ToListAsync(); // Lấy danh sách danh mục sản phẩm
 
             return View(item); // Trả về danh sách sản phẩm phù hợp
         }

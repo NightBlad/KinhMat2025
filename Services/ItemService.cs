@@ -58,7 +58,7 @@ namespace Shopping_Cart_2.Services
         // Lấy tất cả các mặt hàng đã được phê duyệt
         public IEnumerable<Item> GetAll()
         {
-            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+            var Item = _context.Items.Include(x => x.Category) // Bao gồm thông tin danh mục
                                      .Include(x => x.Stock) // Bao gồm thông tin kho
                                      .Include(x => x.Ratings) // Bao gồm đánh giá
                                      .Where(x => x.IsApproved == true) // Chỉ lấy mặt hàng đã phê duyệt
@@ -80,7 +80,7 @@ namespace Shopping_Cart_2.Services
             if (userId == null)
                 throw new UnauthorizedAccessException("Người dùng chưa đăng nhập");
 
-            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+            var Item = _context.Items.Include(x => x.Category) // Bao gồm thông tin danh mục
                                      .Include(x => x.Stock) // Bao gồm thông tin kho
                                      .Include(x => x.Ratings) // Bao gồm đánh giá
                                      .Where(x => x.UserId == userId) // Lọc theo ID người dùng
@@ -93,7 +93,7 @@ namespace Shopping_Cart_2.Services
         // Lấy thông tin một mặt hàng theo ID
         public Item? GetById(int id)
         {
-            var Item = _context.items.Include(x => x.Category) // Bao gồm thông tin danh mục
+            var Item = _context.Items.Include(x => x.Category) // Bao gồm thông tin danh mục
                                      .Include(x => x.Stock) // Bao gồm thông tin kho
                                      .Include(x => x.Ratings) // Bao gồm đánh giá
                                      .AsNoTracking() // Không theo dõi để tối ưu hiệu suất
@@ -121,7 +121,7 @@ namespace Shopping_Cart_2.Services
                 UserId = userId,
                 Stock = st // Gán thông tin kho
             };
-            await _context.items.AddAsync(item); // Thêm mặt hàng vào cơ sở dữ liệu
+            await _context.Items.AddAsync(item); // Thêm mặt hàng vào cơ sở dữ liệu
             await _context.SaveChangesAsync(); // Lưu thay đổi
         }
 
@@ -129,7 +129,7 @@ namespace Shopping_Cart_2.Services
         public async Task<Item?> Update(EditItemVM vmItem)
         {
             // Lấy mặt hàng từ cơ sở dữ liệu
-            var item = await _context.items.Include(g => g.Category) // Bao gồm thông tin danh mục
+            var item = await _context.Items.Include(g => g.Category) // Bao gồm thông tin danh mục
                                             .Include(x => x.Stock) // Bao gồm thông tin kho
                                             .SingleOrDefaultAsync(g => g.Id == vmItem.Id);
             if (item == null) return null;
@@ -175,7 +175,7 @@ namespace Shopping_Cart_2.Services
         {
             var isDeleted = false;
 
-            var item = _context.items.Find(id); // Tìm mặt hàng theo ID
+            var item = _context.Items.Find(id); // Tìm mặt hàng theo ID
             if (item is null)
                 return isDeleted;
 

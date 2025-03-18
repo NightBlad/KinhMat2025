@@ -12,6 +12,6 @@ namespace Shopping_Cart_2.Models
         public int StatusId { get; set; }
 
         public string? StatusName { get; set; } = null;
-        public List<Order> Orders { get; set; } = new List<Order>();
+        public List<Order> Orders { get; set; } = [];
     }
 }

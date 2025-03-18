@@ -59,7 +59,7 @@
                 }
                 else
                 {
-                    var item = await _db.items.FindAsync(itmId);
+                    var item = await _db.Items.FindAsync(itmId);
                     if (item != null)
                     {
                     }
@@ -183,7 +183,7 @@
                     if (cartDetail.Count == 0)
                         throw new InvalidOperationException("Giỏ hàng trống");
 
-                    var pendingRecord = _db.orderStatuses.FirstOrDefault(s => s.StatusName == "Pending");
+                    var pendingRecord = _db.OrderStatuses.FirstOrDefault(s => s.StatusName == "Pending");
                     if (pendingRecord is not null)
                     {
                     }
