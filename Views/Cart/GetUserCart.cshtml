@@ -4,7 +4,6 @@
 }
 
 <div class="px-4 px-lg-0">
-
     @if (Model != null && Model.CartDetails != null && Model.CartDetails.Count > 0)
     {
         <div class="container py-5 text-center">
@@ -61,8 +60,8 @@
                                                 {
                                                     <span style="border: 1px solid;padding: 8px 8px;color: red;border-radius: 5px;margin-right:4px">Hết hàng</span>
                                                 }
-                                                <a class="btn btn-outline-dark" href="/Cart/RemoveItem?itemId=@i.ItemId">-</a>
-                                                <a href="#" class="text-dark"><i class="fa fa-trash"></i></a>
+                                                <a class="btn btn-outline-dark" href="/Cart/RemoveItem?itemId=@i.ItemId&&redirect=1">-</a>
+                                                <a href="/Cart/RemoveItem?itemId=@i.ItemId" class="text-dark"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     }
@@ -96,12 +95,12 @@
                         <div class="p-4">
                             <p class="font-italic mb-4">Chi phí vận chuyển và các chi phí khác được tính dựa trên thông tin bạn đã nhập.</p>
                             <ul class="list-unstyled mb-4">
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá trị đơn hàng</strong><strong>VND@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</strong></li>
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Vận chuyển</strong><strong>VND0.00</strong></li>
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Thuế</strong><strong>VND0.00</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá trị đơn hàng</strong><strong>@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum()) VND</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Vận chuyển</strong><strong>0.00 VND</strong></li>
+								<li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Thuế</strong><strong>0.00 VND</strong></li>
                                 <li class="d-flex justify-content-between py-3 border-bottom">
                                     <strong class="text-muted">Tổng giá trị thanh toán</strong>
-                                    <h5 class="font-weight-bold">VND@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</h5>
+                                    <h5 class="font-weight-bold">@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum()) VND</h5>
                                 </li>
                             </ul><a asp-action="Checkout" class="btn btn-dark rounded-pill py-2 btn-block">Tiến hành thanh toán</a>
                         </div>
