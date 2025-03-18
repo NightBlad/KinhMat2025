@@ -96,12 +96,12 @@
                         <div class="p-4">
                             <p class="font-italic mb-4">Chi phí vận chuyển và các chi phí khác được tính dựa trên thông tin bạn đã nhập.</p>
                             <ul class="list-unstyled mb-4">
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá trị đơn hàng</strong><strong>$@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</strong></li>
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Vận chuyển</strong><strong>$0.00</strong></li>
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Thuế</strong><strong>$0.00</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá trị đơn hàng</strong><strong>VND@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Vận chuyển</strong><strong>VND0.00</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Thuế</strong><strong>VND0.00</strong></li>
                                 <li class="d-flex justify-content-between py-3 border-bottom">
                                     <strong class="text-muted">Tổng giá trị thanh toán</strong>
-                                    <h5 class="font-weight-bold">$@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</h5>
+                                    <h5 class="font-weight-bold">VND@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum())</h5>
                                 </li>
                             </ul><a asp-action="Checkout" class="btn btn-dark rounded-pill py-2 btn-block">Tiến hành thanh toán</a>
                         </div>

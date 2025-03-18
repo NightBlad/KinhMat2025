@@ -1,18 +1,81 @@
 ﻿@inject SignInManager<IdentityUser> SignInManager
+
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }
-<ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
-    @if (hasExternalLogins)
-    {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+
+<nav class="sidebar-nav">
+    <ul class="nav nav-pills flex-column mb-auto">
+        <!-- Profile Link -->
+        <li class="nav-item mb-2">
+            <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)"
+               id="profile"
+               asp-page="./Index">
+                <i class="bi bi-person me-2"></i>Thông tin cá nhân
+            </a>
+        </li>
+
+        <!-- Email Link -->
+        <li class="nav-item mb-2">
+            <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)"
+               id="email"
+               asp-page="./Email">
+                <i class="bi bi-envelope me-2"></i>Email
+            </a>
+        </li>
+
+        <!-- Password Link -->
+        <li class="nav-item mb-2">
+            <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)"
+               id="change-password"
+               asp-page="./ChangePassword">
+                <i class="bi bi-lock me-2"></i>Mật khẩu
+            </a>
+        </li>
+
+        <!-- External Logins (Conditional) -->
+        @if (hasExternalLogins)
+        {
+            <li class="nav-item mb-2">
+                <a class="nav-link"
+                   asp-page="./ExternalLogins">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập ngoài
+                </a>
+            </li>
+        }
+
+        <!-- Order Management Link -->
+        <li class="nav-item mb-2">
+            <a class="nav-link"
+               href="/UserOrder/UserOrders">
+                <i class="bi bi-cart me-2"></i>Quản lý đơn hàng
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<style>
+    .sidebar-nav {
+        padding: 1rem;
     }
 
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-           
-    @* this for order nav *@
-   <li class="nav-item"><a class="nav-link" href="/UserOrder/UserOrders">My Orders</a></li>
-</ul>
+    .nav-link {
+        border-radius: 0.375rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .nav-link:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background-color: #0d6efd;
+            color: white !important;
+        }
+
+    .bi {
+        vertical-align: middle;
+        font-size: 1.1rem;
+    }
+</style>

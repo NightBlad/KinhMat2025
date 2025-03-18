@@ -1,14 +1,14 @@
 ﻿@model IEnumerable<Shopping_Cart_2.Models.Category>
 
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Danh sách loại hàng";
     Layout = "_AdminLayout";
 }
 
 <div class="container mt-4">
-    <h4>Categories</h4>
+    <h4>Danh sách loại hàng</h4>
     <p>
-        <a asp-action="CreateCategory" class="btn btn-primary">Create New</a>
+        <a asp-action="CreateCategory" class="btn btn-primary">Thêm mới</a>
     </p>
     @if (Model != null && Model.Any())
     {
@@ -16,7 +16,7 @@
             <thead>
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Name)</th>
-                    <th>Actions</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,8 +25,8 @@
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Name)</td>
                         <td>
-                            <a asp-action="EditCategory" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Edit</a>
-                            <a asp-action="DeleteCategory" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Delete</a>
+                            <a asp-action="EditCategory" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <a asp-action="DeleteCategory" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xóa</a>
                         </td>
                     </tr>
                 }
@@ -35,7 +35,7 @@
     }
     else
     {
-        <h5>No categories available</h5>
+        <h5>Không có loại hàng phù hợp</h5>
     }
 </div>
 
