@@ -1,25 +1,24 @@
 ﻿@model IEnumerable<Order>
 
-@* this page appears in Account Page so we add nav link in  "/Areas/Identity/Pages/Account/Manage/ManageNav"  *@
+@* Trang này xuất hiện trong Trang Tài Khoản nên có liên kết điều hướng trong "/Areas/Identity/Pages/Account/Manage/ManageNav" *@
 
 @{
 }
 
 <div>
-
 </div>
-<div    class="container mt-4">
-    <a href="/Identity/Account/Manage" class="btn btn-dark  my-2">Quay lại</a>
+<div class="container mt-4">
+    <a href="/Identity/Account/Manage" class="btn btn-dark my-2">Quay lại</a>
 
-    <h4 class="mt-4">Đơn hàng của bạn</h4>
+    <h4 class="mt-4">My Orders</h4>
     @if (Model != null && Model.Count() > 0)
     {
         <table class="table table-light">
-            <thead> 
+            <thead>
                 <tr>
-                    <th scope="col">Ngày đặt hàng</th>
-                    <th scope="col">Trạng thái</th>
-                    <th scope="col"> Tổng:</th>
+                    <th scope="col">OrderDate</th>
+                    <th scope="col">OrderStatus</th>
+                    <th scope="col"> Total:</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -30,17 +29,14 @@
                         <td>@order.CreateDate.ToString("dd-MM-yyyy")</td>
                         <td>@order.OrderStatus.StatusName</td>
                         <td> $@(order.OrderDetail.Select(b => b.Item.Price * b.Quantity).Sum())  </td>
-                        <td> <a class="btn btn-dark  rounded-pill   my-2" asp-action="GetDetail" asp-route-orderId="@order.Id"> Thông tin </a> </td>
+                        <td> <a class="btn btn-dark  rounded-pill   my-2" asp-action="GetDetail" asp-route-orderId="@order.Id"> Details </a> </td>
                     </tr>
-                     
                 }
             </tbody>
-           
         </table>
-
     }
     else
     {
-        <h5>Không có đơn hàng</h5>
+        <h5>No orders</h5>
     }
 </div>

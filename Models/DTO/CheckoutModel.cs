@@ -3,18 +3,18 @@
     public class CheckoutModel
     {
         [Required(ErrorMessage = "Họ và Tên is required")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required")]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [Required(ErrorMessage = "Số điện thoại is required")]
         [Phone(ErrorMessage = "Invalid Phone Number")]
-        public string MobileNumber { get; set; }
+        public required string MobileNumber { get; set; }
 
         [Required(ErrorMessage = "Địa chỉ is required")]
-        public string Address { get; set; }
+        public required string Address { get; set; }
 
         [Required(ErrorMessage = "Phương thức thanh toán is required")]
         public PaymentMethods PaymentMethod { get; set; }
