@@ -5,8 +5,8 @@
 }
 
 <div   class="container mt-4">
-    <h1 class="mt-5">Details for Order Number  @Model.Id </h1>
-    <a asp-action="UserOrders" class="btn btn-dark rounded-pill  m-3" style="width: 9rem;">Back</a>
+    <h1 class="mt-5">Thông tin đơn hàng  @Model.Id </h1>
+    <a asp-action="UserOrders" class="btn btn-dark rounded-pill  m-3" style="width: 9rem;">Quay lại</a>
 
     <div class="row py-5 p-4 bg-white rounded shadow-sm">
         <!-- Order table -->
@@ -15,17 +15,17 @@
                 <thead>
                     <tr>
                         <th scope="col" class="border-0 bg-light">
-                            <div class="p-2 px-3 text-uppercase">Product</div>
+                            <div class="p-2 px-3 text-uppercase">Sản phẩm</div>
                         </th>
                         <th scope="col" class="border-0 bg-light">
-                            <div class="py-2 text-uppercase">Price </div>
+                            <div class="py-2 text-uppercase">Giá </div>
                         </th>
                         <th scope="col" class="border-0 bg-light">
-                            <div class="py-2 text-uppercase">Quantity</div>
+                            <div class="py-2 text-uppercase">Số lượng</div>
                         </th>
 
                         <th scope="col" class="border-0 bg-light">
-                            <div class="py-2 text-uppercase">Total</div>
+                            <div class="py-2 text-uppercase">Tổng</div>
                         </th>
                          
 
@@ -55,16 +55,16 @@
     </div> 
      <!-- Order summary -->
     <div class="row py-5 p-4 bg-white rounded shadow-sm">
-        <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Order summary </div>
+        <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Tóm tắt đơn hàng </div>
         <div class="p-4">
-            <p class="font-italic mb-4">Shipping and additional costs are calculated based on values you have entered.</p>
+            <p class="font-italic mb-4">Phí vận chuyển và chi phí bổ sung được tính dựa trên giá trị kê khai.</p>
             <ul class="list-unstyled mb-4">
-                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Status</strong><strong>@(Model.OrderStatus.StatusName)</strong></li>
-                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Order Subtotal </strong><strong>$@(Model.OrderDetail.Select(i => i.Item.Price * i.Quantity).Sum())</strong></li>
-                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Shipping and handling</strong><strong>$0.00</strong></li>
-                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tax</strong><strong>$0.00</strong></li>
+                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Trạng thái đơn hàng</strong><strong>@(Model.OrderStatus.StatusName)</strong></li>
+                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá đơn hàng </strong><strong>$@(Model.OrderDetail.Select(i => i.Item.Price * i.Quantity).Sum())</strong></li>
+                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Phí vận chuyển</strong><strong>$0.00</strong></li>
+                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">VAT</strong><strong>$0.00</strong></li>
                 <li class="d-flex justify-content-between py-3 border-bottom">
-                    <strong class="text-muted">Total Price of Order </strong>
+                    <strong class="text-muted">Tổng </strong>
                     <h5 class="font-weight-bold">$@(Model.OrderDetail.Select(i => i.Item.Price * i.Quantity).Sum()) </h5>
                 </li>
             </ul> 

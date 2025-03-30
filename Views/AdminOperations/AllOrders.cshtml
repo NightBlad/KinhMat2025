@@ -35,8 +35,8 @@
                             <button type="button" data-bs-toggle="modal" data-bs-target="#modal-@order.Id" class="btn btn-dark rounded-pill d-block my-2">
                                 Chi Tiết Đơn Hàng
                             </button>
-                            <a asp-action="TogglePaymentStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill my-2">Chuyển Đổi Trạng Thái Thanh Toán</a>
-                            <a asp-action="UpdateOrderStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill d-block my-2">Cập Nhật Trạng Thái Đơn Hàng</a>
+                            <a asp-action="TogglePaymentStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill my-2">Chuyển Đổi Trạng Thái</a>
+                            <a asp-action="UpdateOrderStatus" asp-route-orderId="@order.Id" class="btn btn-dark rounded-pill d-block my-2">Cập Nhật Trạng Thái</a>
 
                             @* Thêm modal vào trong ô này *@
                             @await Html.PartialAsync("/Views/AdminOperations/_OrderDetailModal.cshtml", new OrderDetailModalDTO { DivId = order.Id.ToString(), OrderDetail = order.OrderDetail })

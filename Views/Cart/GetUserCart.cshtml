@@ -44,7 +44,10 @@
                                                 <div class="p-2">
                                                     <img src="/assets/images/items/@i.Item.Cover" alt="" width="70" class="img-fluid rounded shadow-sm">
                                                     <div class="ml-3 d-inline-block align-middle">
-                                                        <h5 class="mb-0"> <a href="#" class="text-dark d-inline-block align-middle">@i.Item.Name</a></h5><span class="text-muted font-weight-normal font-italic d-block">Danh mục: @i.Item.Category.Name</span>
+                                                        <h5 class="mb-0">
+                                                            <a href="#" class="text-dark d-inline-block align-middle">@i.Item.Name</a>
+                                                        </h5>
+                                                        <span class="text-muted font-weight-normal font-italic d-block">Danh mục: @i.Item.Category.Name</span>
                                                     </div>
                                                 </div>
                                             </th>
@@ -72,40 +75,45 @@
                     </div>
                 </div>
 
+                <!-- Bỏ phần mã giảm giá và điều chỉnh lại layout -->
                 <div class="row py-5 p-4 bg-white rounded shadow-sm">
-                    <div class="col-lg-6">
-                        <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Mã giảm giá</div>
-                        <div class="p-4">
-                            <p class="font-italic mb-4">Nếu bạn có mã giảm giá, hãy nhập vào ô bên dưới</p>
-                            <div class="input-group mb-4 border rounded-pill p-2">
-                                <input type="text" placeholder="Nhập mã giảm giá" aria-describedby="button-addon3" class="form-control border-0">
-                                <div class="input-group-append border-0">
-                                    <button id="button-addon3" type="button" class="btn btn-dark px-4 rounded-pill"><i class="fa fa-gift mr-2"></i>Áp dụng</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Ghi chú cho người bán</div>
-                        <div class="p-4">
-                            <p class="font-italic mb-4">Nếu bạn có ghi chú nào cho người bán, vui lòng nhập vào ô bên dưới</p>
-                            <textarea name="" cols="30" rows="2" class="form-control"></textarea>
-                        </div>
-                    </div>
+                    <!-- Tóm tắt đơn hàng bên trái -->
                     <div class="col-lg-6">
                         <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Tóm tắt đơn hàng</div>
                         <div class="p-4">
                             <p class="font-italic mb-4">Chi phí vận chuyển và các chi phí khác được tính dựa trên thông tin bạn đã nhập.</p>
                             <ul class="list-unstyled mb-4">
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Tổng giá trị đơn hàng</strong><strong>@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum()) VND</strong></li>
-                                <li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Vận chuyển</strong><strong>0.00 VND</strong></li>
-								<li class="d-flex justify-content-between py-3 border-bottom"><strong class="text-muted">Thuế</strong><strong>0.00 VND</strong></li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Tổng giá trị đơn hàng</strong>
+                                    <strong>@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum()) VND</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Vận chuyển</strong>
+                                    <strong>0.00 VND</strong>
+                                </li>
+                                <li class="d-flex justify-content-between py-3 border-bottom">
+                                    <strong class="text-muted">Thuế</strong>
+                                    <strong>0.00 VND</strong>
+                                </li>
                                 <li class="d-flex justify-content-between py-3 border-bottom">
                                     <strong class="text-muted">Tổng giá trị thanh toán</strong>
                                     <h5 class="font-weight-bold">@(Model.CartDetails.Select(i => i.Item.Price * i.Quantity).Sum()) VND</h5>
                                 </li>
-                            </ul><a asp-action="Checkout" class="btn btn-dark rounded-pill py-2 btn-block">Tiến hành thanh toán</a>
+                            </ul>
+                            <a asp-action="Checkout" class="btn btn-dark rounded-pill py-2 btn-block">Tiến hành thanh toán</a>
+                        </div>
+                    </div>
+
+                    <!-- Ghi chú cho người bán bên phải -->
+                    <div class="col-lg-6">
+                        <div class="bg-light rounded-pill px-4 py-3 text-uppercase fw-bold">Ghi chú cho người bán</div>
+                        <div class="p-4">
+                            <p class="font-italic mb-4">Nếu bạn có ghi chú nào cho người bán, vui lòng nhập vào ô bên dưới</p>
+                            <textarea name="Note" cols="30" rows="10" class="form-control" style="width: 100%; resize: none;"></textarea>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     }

@@ -4,32 +4,33 @@
     <!-- Mục đích trình diễn -->
     <header class="text-center mb-5">
         <!-- Lọc danh mục -->
-        <ul class="nav justify-content-center links-container cat">
+        <ul class="nav justify-content-center links-container cat flex-nowrap" style="overflow-x: auto;">
             <li>
-                <a class="btn btn-dark cat" style="width: 3rem" asp-action="Products">Tất cả</a>
+                <a class="btn btn-dark cat px-3" asp-action="Products">Tất cả</a>
             </li>
             @foreach (var g in ViewBag.categories)
             {
                 <li>
-                    <a class="btn btn-outline-dark cat" asp-action="Products" asp-route-categoryName="@g.Name">@g.Name</a>
+                    <a class="btn btn-outline-dark cat px-3" asp-action="Products" asp-route-categoryName="@g.Name">@g.Name</a>
                 </li>
             }
         </ul>
+
         <!-- Tìm kiếm -->
-        <div class="container-fluid search">
+        <div class="container-fluid search mt-3" style="max-width: 500px;">
             <form asp-controller="Home" asp-action="Products" class="d-flex" role="search">
-                <input name="seachName" class="form-control me-2 ser2" type="search" placeholder="Tìm kiếm" aria-label="Search"
-                       value="@ViewBag.seachName">
-                <button class="btn btn-outline-success" type="submit">Tìm kiếm</button>
+                <input name="searchName" class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" value="@ViewBag.searchName">
+                <button class="btn btn-success rounded-pill px-3" type="submit">Tìm kiếm</button>
             </form>
         </div>
-        <h1 class="display-4 font-weight-bold">Nhấp và Mua ngay!</h1>
+
+        <h1 class="display-4 font-weight-bold mt-4">Nhấp và Mua ngay!</h1>
     </header>
 
-    <!-- Hàng đầu tiên [Sản phẩm] -->
+    <!-- Hiển thị sản phẩm -->
     @if (!Model.Any())
     {
-        <div class="container alert alert-warning mt-5">
+        <div class="container alert alert-warning mt-5 text-center">
             <h4 class="alert-heading">Không có sản phẩm!</h4>
             <p class="mb-0">Chưa có sản phẩm nào được thêm vào.</p>
         </div>
@@ -39,33 +40,32 @@
         <div class="row pb-5 mb-4">
             @foreach (var item in Model)
             {
-                <input type="hidden" asp-route-itemId="@item.Id" />
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <div class="col-lg-3 col-md-6 mb-4">
                     <!-- Thẻ sản phẩm -->
                     <div class="card rounded shadow-sm border-0">
-                        <div class="card-body p-4">
+                        <div class="card-body p-4 text-center">
                             <a asp-controller="Items" asp-action="Details" asp-route-itemId="@item.Id">
                                 @if (string.IsNullOrEmpty(item.Cover))
                                 {
-                                    <img style="width:100%;height:180px" src="/assets/images/NoImage.png" class="card-img-top" alt="Không có ảnh">
+                                    <img class="card-img-top" style="width:100%;height:180px;object-fit:cover;" src="/assets/images/NoImage.png" alt="Không có ảnh">
                                 }
                                 else
                                 {
-                                    <img style="width:100%;height:180px" src="/assets/images/items/@item.Cover" class="card-img-top" alt="@item.Name">
+                                    <img class="card-img-top" style="width:100%;height:180px;object-fit:cover;" src="/assets/images/items/@item.Cover" alt="@item.Name">
                                 }
                             </a>
-                            <h5> <a href="#" class="text-dark">@item.Name</a></h5>
-                            <h5> @item.Price VND </h5>
-                            <p class="small text-muted font-italic"> @item.Description</p>
+                            <h5 class="mt-3"><a asp-controller="Items" asp-action="Details" asp-route-itemId="@item.Id" class="text-dark">@item.Name</a></h5>
+                            <h5 class="text-success">@item.Price VND</h5>
+                            <p class="small text-muted font-italic">@item.Description</p>
 
                             <!-- Đánh giá sản phẩm -->
                             @if (@item.ProductAverageRate == -1)
                             {
-                                <p>Chưa có đánh giá</p>
+                                <p class="text-muted">Chưa có đánh giá</p>
                             }
                             else
                             {
-                                <ul class="list-inline small">
+                                <ul class="list-inline small text-warning">
                                     @{
                                         int wholeStar = (int)item.ProductAverageRate;
                                         bool hasHalfStar = item.ProductAverageRate % 1 > 0;
@@ -73,12 +73,17 @@
 
                                     @for (int i = 0; i < wholeStar; i++)
                                     {
-                                        <li class="list-inline-item m-0"><i class="fa fa-star text-success"></i></li>
+                                        <li class="list-inline-item"><i class="fa fa-star"></i></li>
                                     }
 
                                     @if (hasHalfStar)
                                     {
-                                        <li class="list-inline-item m-0"><i class="fa fa-star-half text-success"></i></li>
+                                        <li class="list-inline-item"><i class="fa fa-star-half"></i></li>
+                                    }
+
+                                    @for (int i = wholeStar + (hasHalfStar ? 1 : 0); i < 5; i++)
+                                    {
+                                        <li class="list-inline-item text-secondary"><i class="fa fa-star"></i></li>
                                     }
                                 </ul>
                             }
@@ -105,9 +110,9 @@
                     cartCountEl.innerHTML = result;
                     window.location.href = "#cartCount";
                 }
-            }
-            catch (err) {
+            } catch (err) {
                 console.log(err);
+                alert("Có lỗi xảy ra khi thêm vào giỏ hàng!");
             }
         }
     </script>

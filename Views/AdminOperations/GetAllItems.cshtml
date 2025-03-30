@@ -5,11 +5,11 @@
     Layout = "_AdminLayout";
     ViewData["Title"] = "Sản Phẩm";
 }
+
 <div class="container">
     <h1 style="text-align: center;">Quản Lý Sản Phẩm Cửa Hàng</h1>
     <a class="btn btn-secondary btn-lg" asp-controller="Items" asp-action="Create" style="margin-top: 2rem;">
-        <i class="bi bi-plus-circle-dotted"></i>
-        Thêm Sản Phẩm
+        <i class="bi bi-plus-circle-dotted"></i> Thêm Sản Phẩm
     </a>
 
     @if (!Model.Any())
@@ -36,26 +36,26 @@
                 <tbody>
                     @foreach (var g in Model)
                     {
-                        <tr class="border-1 border-success" style="justify-content: center;">
-                            <td>@g.Name</td>
-                            <td>@g.UserId</td>
-                            <td>@g.Category.Name</td>
-                            <td>
+                        <tr class="border-1 border-success">
+                            <td class="align-middle">@g.Name</td>
+                            <td class="align-middle">@g.UserId</td>
+                            <td class="align-middle">@g.Category.Name</td>
+                            <td class="align-middle">
                                 <div class="pe-4">
                                     <img src="@($"{FileSettings.ImagesPath}/{g.Cover}")" alt="@g.Name" style="width:100px;height:100px" />
                                 </div>
                             </td>
-                            <td>@(g.IsApproved ? "Đã Duyệt" : "Chưa Duyệt")</td>
-                            <td class="align-middle">
-                                <div class="d-flex justify-content-end">
-                                    <a class="btn btn-info rounded rounded-3 me-2" asp-controller="Items" asp-action="Edit" asp-route-id="@g.Id">
+                            <td class="align-middle">@(g.IsApproved ? "Đã Duyệt" : "Chưa Duyệt")</td>
+                            <td class="align-middle text-nowrap">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-info rounded rounded-3" asp-controller="Items" asp-action="Edit" asp-route-id="@g.Id">
                                         <i class="bi bi-pencil-fill"></i>
                                     </a>
-                                    <a class="btn btn-danger rounded-pill js-delete me-2" data-id="@g.Id">
+                                    <a class="btn btn-danger rounded-pill js-delete" data-id="@g.Id">
                                         <i class="bi bi-trash3"></i>
                                     </a>
-                                    <a asp-action="ToggleApprovementStatus" asp-route-ItemId="@g.Id" class="btn btn-dark rounded-pill me-2">
-                                        Chuyển Trạng Thái Duyệt
+                                    <a asp-action="ToggleApprovementStatus" asp-route-ItemId="@g.Id" class="btn btn-dark rounded-pill">
+                                        Duyệt
                                     </a>
                                 </div>
                             </td>
