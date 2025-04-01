@@ -6,46 +6,65 @@
     Layout = "_AdminLayout";
 }
 
-<div class="container p-3">
-    <div class="row pt-4">
-        <div class="col-6">
-            <h2 class="text-primary">Người dùng hệ thống</h2>
-        </div>
-        <div class="col-6 text-right">
-            <a asp-action="Create" class="btn btn-primary">Create New User</a>
-        </div>
-    </div>
+<div class="container">
+    <h1 style="text-align: center;">Người dùng hệ thống</h1>
+    <a class="btn btn-secondary btn-lg" asp-action="Create" style="margin-top: 2rem;">
+        <i class="bi bi-plus-circle-dotted"></i> Create New User
+    </a>
 
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">ID người dùng</th>
-                <th scope="col">Tên đăng nhập</th>
-                <th scope="col">Số điện thoại</th>
-                <th scope="col">Email</th>
-                <th scope="col">Xác nhận Email</th>
-                <th scope="col">Hành động</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var u in Model)
-            {
-                <tr class="table-primary">
-                    <td scope="row" width="30%">@u.Id</td>
-                    <td>@u.UserName</td>
-                    <td>@u.PhoneNumber</td>
-                    <td>@u.Email</td>
-                    <td>@(u.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")</td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@u.Id" class="btn btn-sm btn-warning">
-                            <i class="bi bi-pencil"></i> Edit
-                        </a>
-                        <a asp-action="Delete" asp-route-id="@u.Id" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i> Delete
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning mt-5">
+            <h4 class="alert-heading">Không có người dùng!</h4>
+            <p class="mb-0">Chưa có người dùng nào được thêm vào.</p>
+        </div>
+    }
+    else
+    {
+        <div>
+            <table class="table table-hover border-primary" id="example">
+                <thead>
+                    <tr>
+                        <th>ID người dùng</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Số điện thoại</th>
+                        <th>Email</th>
+                        <th>Xác nhận Email</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in Model)
+                    {
+                        <tr class="border-1 border-success">
+                            <td class="align-middle">@u.Id</td>
+                            <td class="align-middle">@u.UserName</td>
+                            <td class="align-middle">@u.PhoneNumber</td>
+                            <td class="align-middle">@u.Email</td>
+                            <td class="align-middle">@(u.EmailConfirmed ? "Đã xác nhận" : "Chưa xác nhận")</td>
+                            <td class="align-middle text-nowrap">
+                                <div class="d-inline-flex gap-2">
+                                    <a class="btn btn-warning rounded rounded-3" asp-action="Edit" asp-route-id="@u.Id">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </a>
+                                    <a class="btn btn-danger rounded-pill" asp-action="Delete" asp-route-id="@u.Id">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
 </div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({ responsive: true });
+        });
+    </script>
+}

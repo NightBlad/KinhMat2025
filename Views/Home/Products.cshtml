@@ -6,12 +6,12 @@
         <!-- Lọc danh mục -->
         <ul class="nav justify-content-center links-container cat flex-nowrap" style="overflow-x: auto;">
             <li>
-                <a class="btn btn-dark cat px-3" asp-action="Products">Tất cả</a>
+                <a id="allCategories" class="btn btn-dark cat px-3" asp-action="Products" onclick="setActiveCategory(this)">Tất cả</a>
             </li>
             @foreach (var g in ViewBag.categories)
             {
                 <li>
-                    <a class="btn btn-outline-dark cat px-3" asp-action="Products" asp-route-categoryName="@g.Name">@g.Name</a>
+                    <a id="category-@g.Name" class="btn btn-outline-dark cat px-3" asp-action="Products" asp-route-categoryName="@g.Name" onclick="setActiveCategory(this)">@g.Name</a>
                 </li>
             }
         </ul>
@@ -19,7 +19,7 @@
         <!-- Tìm kiếm -->
         <div class="container-fluid search mt-3" style="max-width: 500px;">
             <form asp-controller="Home" asp-action="Products" class="d-flex" role="search">
-                <input name="searchName" class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" value="@ViewBag.searchName">
+                <input id="searchInput" name="searchName" class="form-control me-2 rounded-pill" type="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search" value="@ViewBag.searchName">
                 <button class="btn btn-success rounded-pill px-3" type="submit">Tìm kiếm</button>
             </form>
         </div>
@@ -37,10 +37,10 @@
     }
     else
     {
-        <div class="row pb-5 mb-4">
+        <div id="itemsContainer" class="row pb-5 mb-4">
             @foreach (var item in Model)
             {
-                <div class="col-lg-3 col-md-6 mb-4">
+                <div class="col-lg-3 col-md-6 mb-4 item">
                     <!-- Thẻ sản phẩm -->
                     <div class="card rounded shadow-sm border-0">
                         <div class="card-body p-4 text-center">
@@ -115,5 +115,68 @@
                 alert("Có lỗi xảy ra khi thêm vào giỏ hàng!");
             }
         }
+
+        function setActiveCategory(element) {
+            var buttons = document.querySelectorAll('.cat .btn');
+            buttons.forEach(function(btn) {
+                btn.classList.remove('btn-dark');
+                btn.classList.add('btn-outline-dark');
+            });
+            element.classList.remove('btn-outline-dark');
+            element.classList.add('btn-dark');
+        }
+
+        function setActiveCategoryFromUrl() {
+            var urlParams = new URLSearchParams(window.location.search);
+            var categoryName = urlParams.get('categoryName');
+            if (categoryName) {
+                var activeButton = document.getElementById('category-' + categoryName);
+                if (activeButton) {
+                    setActiveCategory(activeButton);
+                }
+            } else {
+                setActiveCategory(document.getElementById('allCategories'));
+            }
+        }
+
+        function filterItems() {
+            var input = document.getElementById('searchInput');
+            var filter = input.value.toLowerCase();
+            var items = document.querySelectorAll('#itemsContainer .item');
+
+            items.forEach(function(item) {
+                var itemName = item.querySelector('h5 a').textContent.toLowerCase();
+                if (itemName.includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setActiveCategoryFromUrl();
+            document.getElementById('searchInput').addEventListener('input', filterItems);
+        });
     </script>
 }
+
+
+
+<style>
+    .btn-outline-dark:hover {
+        color: #fff !important;
+        background-color: #343a40 !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transform: scale(1.05);
+    }
+
+    .btn-dark {
+        transform: scale(1.1);
+    }
+
+    .btn-success:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+		transform: scale(1.05);
+    }
+</style>
