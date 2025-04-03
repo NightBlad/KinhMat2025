@@ -6,7 +6,8 @@
 <!-- Phần mở đầu -->
 <div class="text-secondary text-center hero" style="background: transparent;">
     <div class="hero-bg"></div>
-    <div class="container py-5">
+    <div class="hero-overlay"></div>
+    <div class="container py-5" style="position: relative; z-index: 2;>
         <h1 class="display-5 fw-bold text-black">Thế giới kính thời trang Kool!</h1>
         <div class="mx-auto">
             <p class="fs-5 mb-4" style="color:black">Đeo kính không chỉ là nhìn rõ hơn, mà còn là thể hiện phong cách!</p>
@@ -61,22 +62,55 @@
 <!-- Thêm JavaScript ở đây -->
 <script>
     const heroBg = document.querySelector('.hero-bg');
+    const heroOverlay = document.querySelector('.hero-overlay');
     const images = [
         'url("../assets/img/bg/background1.jpg")',
         'url("../assets/img/bg/background2.jpg")',
         'url("../assets/img/bg/background3.jpg")'
     ];
+    const links = [
+        'https://kinhmatkool.io.vn/Items/Details?itemId=11',
+        'https://kinhmatkool.io.vn/Items/Details?itemId=3',
+        'https://kinhmatkool.io.vn/Items/Details?itemId=5'
+    ];
     let currentIndex = 0;
 
     function changeBackground() {
+        heroBg.classList.add('transitioning');
         heroBg.style.opacity = 0;
 
         setTimeout(() => {
             currentIndex = (currentIndex + 1) % images.length;
             heroBg.style.backgroundImage = images[currentIndex];
             heroBg.style.opacity = 1;
+            heroBg.classList.remove('transitioning');
         }, 1000);
     }
 
+    // Khởi tạo hình nền ban đầu
+    heroBg.style.backgroundImage = images[currentIndex];
+
+    // Thêm sự kiện click vào heroOverlay
+    heroOverlay.addEventListener('click', () => {
+        if (!heroBg.classList.contains('transitioning')) {
+            window.location.href = links[currentIndex];
+        }
+    });
+
+    // Bắt đầu chuyển đổi hình nền
     setInterval(changeBackground, 4000);
 </script>
+
+<head>
+    <style>
+        .btn {
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+            .btn:hover {
+                background-color: #343a40;
+                color: #fff;
+            }
+    </style>
+</head>
